@@ -15,7 +15,12 @@ export default function StackNavigator() {
             <SafeAreaView style={styles.screen}>
                 {/* to-do: replace with iStyle logo */}
                 <Text style={styles.header}>iStyle</Text>
-                <Tab.Navigator>
+                <Tab.Navigator
+                    screenOptions={{
+                        sceneContainerStyle: { backgroundColor: '#f0f0f0' },
+                        tabBarIndicatorStyle: { backgroundColor: Palette.primary },
+                    }}
+                >
                     <Tab.Screen
                         name="LogIn"
                         component={LogInScreen}
