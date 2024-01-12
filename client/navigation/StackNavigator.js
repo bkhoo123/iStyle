@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -14,7 +14,13 @@ export default function StackNavigator() {
 		<NavigationContainer>
             <SafeAreaView style={styles.screen}>
                 {/* to-do: replace with iStyle logo */}
-                <Text style={styles.header}>iStyle</Text>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../assets/iStyleLogo_Text.png')}
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
+                </View>
                 <Tab.Navigator
                     screenOptions={{
                         sceneContainerStyle: { backgroundColor: '#f0f0f0' },
@@ -45,5 +51,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 28,
         fontWeight: 800,
+    },
+    logoContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+    },
+    logo: {
+        height: 50,
     }
 });
