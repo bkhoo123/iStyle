@@ -6,6 +6,7 @@ export default function SocialButton({ buttonText, children, onPress }) {
   return (
     <Pressable
         onPress={onPress}
+        style={({ pressed }) => pressed ? styles.pressed : ""}
         android_ripple={{ color: Palette.border }}
     >
         {/* to-do: google button */}
@@ -16,7 +17,7 @@ export default function SocialButton({ buttonText, children, onPress }) {
                 { children }
             </View>
             <View style={styles.buttonTextContainer}>
-                <Text>{ buttonText }</Text>
+                <Text style={styles.buttonText}>{ buttonText }</Text>
             </View>
         </View>
         {/* to-do: facebook button */}
@@ -42,5 +43,11 @@ const styles = StyleSheet.create({
     },
     buttonTextContainer: {
         flex: 1,
+    },
+    pressed: {
+        opacity: 0.75
+    },
+    buttonText: {
+        fontSize: 16,
     }
 });

@@ -6,6 +6,7 @@ export default function PrimaryButton({ onPress, buttonText }) {
   return (
     <Pressable
         onPress={onPress}
+        style={({ pressed }) => pressed ? styles.pressed : ""}
         android_ripple={{ color: Palette.border }}
     >
         {/* to-do: google button */}
@@ -35,5 +36,9 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: Palette.background,
+        fontSize: 16,
     },
+    pressed: {
+        opacity: 0.75
+    }
 })

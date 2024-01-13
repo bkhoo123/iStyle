@@ -11,7 +11,7 @@ export default function StackNavigator() {
 	const Stack = createNativeStackNavigator();
 	const Tab = createMaterialTopTabNavigator();
 	return (
-		<NavigationContainer>
+		<NavigationContainer style={styles.screen}>
             <SafeAreaView style={styles.screen}>
                 {/* to-do: replace with iStyle logo */}
                 <View style={styles.logoContainer}>
@@ -46,6 +46,7 @@ export default function StackNavigator() {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
+        margin: 0,
     },
     header: {
         textAlign: 'center',

@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
         width: '100%',
         borderColor: Palette.primary,
         borderWidth: 1,
-        padding: 8,
-        fontSize: 18,
+        padding: 16,
+        fontSize: 16,
     },
     dividerContainer: {
         flexDirection: 'row',
