@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TextInput, Pressable } from "react-native";
 import React, { useState } from "react";
 import Palette from "../constants/Palette";
-import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
@@ -10,15 +9,6 @@ export default function LogInScreen() {
     const [ credential, setCredential ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ errors, setErrors ] = useState([]);
-
-    let [fontsLoaded, fontError] = useFonts({
-        Montserrat_400Regular,
-        Montserrat_600SemiBold,
-    });
-
-    if (!fontsLoaded && !fontError) {
-        return null;
-    }
 
     const emailInputHandler = (input) => {
         setCredential(input);

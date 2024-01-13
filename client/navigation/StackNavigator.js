@@ -6,12 +6,30 @@ import React from "react";
 import LogInScreen from "../screens/LogInScreen";
 import Palette from "../constants/Palette";
 import SignUpScreen from "../screens/SignUpScreen";
+import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
+import { useCallback } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 
 export default function StackNavigator() {
+    const [fontsLoaded, fontError] = useFonts({
+        Montserrat_400Regular,
+        Montserrat_600SemiBold,
+    });
+
+    const onLayoutRootView = useCallback(async () => {
+        if (fontsLoaded || fontError) {
+        await SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded, fontError]);
+
+    if (!fontsLoaded && !fontError) {
+        return null;
+    }
+
 	const Stack = createNativeStackNavigator();
 	const Tab = createMaterialTopTabNavigator();
 	return (
-		<NavigationContainer style={styles.screen}>
+		<NavigationContainer style={styles.screen} onLayout={onLayoutRootView}>
             <SafeAreaView style={styles.screen}>
                 {/* to-do: replace with iStyle logo */}
                 <View style={styles.logoContainer}>

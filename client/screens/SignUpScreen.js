@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import Palette from "../constants/Palette";
-import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
+// import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
@@ -13,14 +13,14 @@ export default function SignUpScreen() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errors, setErrors] = useState([]);
 
-	let [fontsLoaded, fontError] = useFonts({
-		Montserrat_400Regular,
-		Montserrat_600SemiBold,
-	});
+	// let [fontsLoaded, fontError] = useFonts({
+	// 	Montserrat_400Regular,
+	// 	Montserrat_600SemiBold,
+	// });
 
-	if (!fontsLoaded && !fontError) {
-		return null;
-	}
+	// if (!fontsLoaded && !fontError) {
+	// 	return null;
+	// }
 
   const handleNameInput = (input) => {
     setName(input);
