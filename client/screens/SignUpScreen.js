@@ -5,6 +5,9 @@ import Palette from "../constants/Palette";
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
+import { useDispatch } from "react-redux";
+import { signup } from "../store/session";
+import { validateEmail } from "../util/emailValidation";
 
 export default function SignUpScreen() {
   const [ name, setName ] = useState("");
@@ -12,15 +15,7 @@ export default function SignUpScreen() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errors, setErrors] = useState([]);
-
-	// let [fontsLoaded, fontError] = useFonts({
-	// 	Montserrat_400Regular,
-	// 	Montserrat_600SemiBold,
-	// });
-
-	// if (!fontsLoaded && !fontError) {
-	// 	return null;
-	// }
+  const dispatch = useDispatch();
 
   const handleNameInput = (input) => {
     setName(input);
@@ -36,9 +31,62 @@ export default function SignUpScreen() {
 
   const handleConfirmPasswordInput = (input) => {
 		setConfirmPassword(input);
+
+    // to-do: error message if password and confirm password fields do not match
 	};
 
 	// to-do: handleSignup
+  const handleSignUp = async () => {
+    const newUser = {
+      name,
+      credential,
+      password
+    }
+
+    setErrors({});
+    const submitErrors = {};
+
+    if (name.length < 1) {
+      // to-do: name is required
+      submitErrors.nameRequired = "Please enter your name";
+    };
+
+    if (credential.length < 1) {
+      // to-do: email is required
+      submitErrors.emailRequired = "Please enter your email";
+    };
+
+    // to-do: validate email
+    if (!validateEmail(credential)) {
+      submitErrors.invalidEmail = "Please enter a valid email";
+    };
+
+    if (password.length < 1) {
+      // to-do: password is required
+      submitErrors.passwordRequired = "Please enter a password";
+    };
+
+    if (password.length < 8) {
+      // to-do: password length must be at least 8 characters long
+      submitErrors.passwordTooShort = "Password must be at least 8 characters long";
+    };
+
+    if (password.length > 50) {
+      // to-do: password length must be less than 50 characters long
+      submitErrors.passwordTooLong = "Password must be less than 50 characters long";
+    };
+
+    console.log("submitErrors", submitErrors, Object.keys(submitErrors));
+
+    if (Object.keys(submitErrors).length > 0) {
+        setErrors(submitErrors);
+        console.log("errors", errors);
+        return;
+    };
+
+
+      // return dispatch(signup(newUser));
+  }
 
 	return (
 		<SafeAreaView style={styles.rootContainer}>
@@ -56,6 +104,12 @@ export default function SignUpScreen() {
                 onChangeText={handleNameInput}
                 autoCapitalize="none"
               />
+              {
+                // to-do: create error message component
+                errors.nameRequired ? (
+                  <Text>{ errors.nameRequired }</Text>
+                ) : ""
+              }
             </View>
 
             {/* to-do: email field */}
@@ -68,6 +122,16 @@ export default function SignUpScreen() {
                 onChangeText={handleEmailInput}
                 autoCapitalize="none"
               />
+              {
+                errors.emailRequired ? (
+                  <Text>{ errors.emailRequired }</Text>
+                ) : ""
+              }
+              {
+                errors.invalidEmail ? (
+                  <Text>{ errors.invalidEmail }</Text>
+                ) : ""
+              }
             </View>
 
             {/* to-do: password field */}
@@ -80,6 +144,21 @@ export default function SignUpScreen() {
                 onChangeText={handlePasswordInput}
                 secureTextEntry={true}
               />
+              {
+                errors.passwordRequired ? (
+                  <Text>{ errors.passwordRequired }</Text>
+                ) : ""
+              }
+              {
+                errors.passwordTooLong ? (
+                  <Text>{ errors.passwordTooLong }</Text>
+                ) : ""
+              }
+              {
+                errors.passwordTooLong ? (
+                  <Text>{ errors.passwordTooLong }</Text>
+                ) : ""
+              }
             </View>
 
             <View style={styles.formGroup}>
@@ -91,12 +170,17 @@ export default function SignUpScreen() {
                 onChangeText={handleConfirmPasswordInput}
                 secureTextEntry={true}
               />
+              {
+                password !== confirmPassword ? (
+                  <Text>Passwords do not match</Text>
+                ) : ""
+              }
             </View>
           </View>
 
           <PrimaryButton
             buttonText="Sign Up"
-            // onPress={handleSignUp}
+            onPress={handleSignUp}
           />
 
           <View style={styles.dividerContainer}>
