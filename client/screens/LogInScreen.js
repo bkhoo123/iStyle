@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
 import ErrorText from "../components/ErrorText";
+import Input from "../components/Input";
 
 export default function LogInScreen() {
     const [ credential, setCredential ] = useState("");
@@ -73,39 +74,23 @@ export default function LogInScreen() {
 
                 <Text style={styles.headerText}>Welcome back!</Text>
                 <View style={styles.formContainer}>
-                    {/* to-do: email field */}
-                    <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Email</Text>
-                        <TextInput
-                            placeholder="Enter your email"
-                            style={styles.formInput}
-                            value={credential}
-                            onChangeText={emailInputHandler}
-                            autoCapitalize="none"
-                        />
-                        {
-                            errors.email && errors.email.length ? (
-                                <ErrorText>{ errors.email }</ErrorText>
-                            ) : ""
-                        }
-                    </View>
+                    <Input
+                        labelText="Email"
+                        placeholderText="Enter your email"
+                        inputValue={credential}
+                        handleTextChange={handleEmailInput}
+                        errors={errors.email}
+                    />
 
-                    {/* to-do: password field */}
-                    <View style={styles.formGroup}>
-                        <Text style={styles.formLabel}>Password</Text>
-                        <TextInput
-                            placeholder="Enter your password"
-                            style={styles.formInput}
-                            value={password}
-                            onChangeText={passwordInputHandler}
-                            secureTextEntry={true}
-                        />
-                        {
-                            errors.password ? (
-                                <ErrorText>{ errors.password }</ErrorText>
-                            ) : ""
-                        }
-                    </View>
+                    <Input
+                        labelText="Password"
+                        placeholderText="Enter your password"
+                        inputValue={password}
+                        handleTextChange={handlePasswordInput}
+                        errors={errors.password}
+                    />
+
+                    {/* to-do: forgot password? */}
                 </View>
 
                 <PrimaryButton
