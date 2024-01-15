@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Closet = require('../models/Closet')
 const bcrypt = require('bcryptjs');
 
+// Sign up Route
 router.post('/signup', async (req, res) => {
   try {
     // Check if the user already exists 
@@ -13,9 +15,9 @@ router.post('/signup', async (req, res) => {
     console.log(userExists, 'userExists')
 
     // Create a new user 
-    const {name, email, password, sex, height} = req.body;
+    const {firstName, lastName, email, password, sex, height} = req.body;
 
-    const user = new User({name, email, password, sex, height})
+    const user = new User({firstName, lastName, email, password, sex, height})
 
     console.log(user, "user")
 
@@ -27,7 +29,7 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-
+// Login Route
 router.post('/login', async (req, res) => {
   try {
     // Find the user by email 
@@ -48,11 +50,38 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.delete("/", async (req, res) => {
+// Route to Delete a User 
+router.delete("/:userId", async (req, res) => {
   try {
-    
+    const { userId } = req.params
+
+    if (!userId) {
+      return res.status(404).send("User not found or already deleted.")
+    }
+
+    // If all goes well confirm the deletion to the client
+    res.status(200).send("User deleted successfully")
+
   } catch (error) {
-    res.status(500).send("")
+    res.status(500).send("Error during deletion: " + error.mesesage)
+  }
+})
+
+// Route to create a new closet for a user
+router.post("/:userId/closets", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+    }
+
+    const { name, type, notes} = req.body;
+
+
+  } catch (error) {
+
   }
 })
 
