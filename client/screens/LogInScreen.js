@@ -7,6 +7,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
+import ErrorText from "../components/ErrorText";
 
 export default function LogInScreen() {
     const [ credential, setCredential ] = useState("");
@@ -30,22 +31,28 @@ export default function LogInScreen() {
         }
 
         setErrors({});
-        const submitErrors = {};
+        const submitErrors = {
+            email: [],
+            password: []
+        };
+
+        console.log(submitErrors, submitErrors.email);
 
         if (credential.length < 1) {
             // to-do: email is required
-            submitErrors.emailRequired = "Please enter your email";
+            submitErrors.email.push("Please enter your email");
+            console.log("submiterror", submitErrors);
         };
 
         // to-do: validate email
         console.log("validate==>", validateEmail(credential))
         if (!validateEmail(credential)) {
-            submitErrors.invalidEmail = "Please enter a valid email";
+            submitErrors.email.push("Please enter a valid email");
         };
 
         if (password.length < 1) {
             // to-do: password is required
-            submitErrors.passwordRequired = "Please enter your password";
+            submitErrors.password.push("Please enter your password");
         };
 
         console.log("submitErrors", submitErrors, Object.keys(submitErrors));
@@ -77,13 +84,8 @@ export default function LogInScreen() {
                             autoCapitalize="none"
                         />
                         {
-                            errors.emailRequired ? (
-                                <Text>{ errors.emailRequired }</Text>
-                            ) : ""
-                        }
-                        {
-                            errors.invalidEmail ? (
-                                <Text>{ errors.invalidEmail }</Text>
+                            errors.email && errors.email.length ? (
+                                <ErrorText>{ errors.email }</ErrorText>
                             ) : ""
                         }
                     </View>
@@ -99,8 +101,8 @@ export default function LogInScreen() {
                             secureTextEntry={true}
                         />
                         {
-                            errors.passwordRequired ? (
-                                <Text>{ errors.passwordRequired }</Text>
+                            errors.password ? (
+                                <ErrorText>{ errors.password }</ErrorText>
                             ) : ""
                         }
                     </View>

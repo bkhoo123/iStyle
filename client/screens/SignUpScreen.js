@@ -8,6 +8,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { signup } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
+import ErrorText from "../components/ErrorText";
 
 export default function SignUpScreen() {
   const [ name, setName ] = useState("");
@@ -44,36 +45,40 @@ export default function SignUpScreen() {
     }
 
     setErrors({});
-    const submitErrors = {};
+    const submitErrors = {
+      name: [],
+      email: [],
+      password: []
+    };
 
     if (name.length < 1) {
       // to-do: name is required
-      submitErrors.nameRequired = "Please enter your name";
+      submitErrors.name.push("Please enter your name");
     };
 
     if (credential.length < 1) {
       // to-do: email is required
-      submitErrors.emailRequired = "Please enter your email";
+      submitErrors.email.push("Please enter your email");
     };
 
     // to-do: validate email
     if (!validateEmail(credential)) {
-      submitErrors.invalidEmail = "Please enter a valid email";
+      submitErrors.email.push("Please enter a valid email");
     };
 
     if (password.length < 1) {
       // to-do: password is required
-      submitErrors.passwordRequired = "Please enter a password";
+      submitErrors.password.push("Please enter a password");
     };
 
     if (password.length < 8) {
       // to-do: password length must be at least 8 characters long
-      submitErrors.passwordTooShort = "Password must be at least 8 characters long";
+      submitErrors.password.push("Password must be at least 8 characters long");
     };
 
     if (password.length > 50) {
       // to-do: password length must be less than 50 characters long
-      submitErrors.passwordTooLong = "Password must be less than 50 characters long";
+      submitErrors.password.push("Password must be less than 50 characters long");
     };
 
     console.log("submitErrors", submitErrors, Object.keys(submitErrors));
@@ -105,9 +110,8 @@ export default function SignUpScreen() {
                 autoCapitalize="none"
               />
               {
-                // to-do: create error message component
-                errors.nameRequired ? (
-                  <Text>{ errors.nameRequired }</Text>
+                errors.name ? (
+                  <ErrorText>{ errors.name }</ErrorText>
                 ) : ""
               }
             </View>
@@ -123,13 +127,8 @@ export default function SignUpScreen() {
                 autoCapitalize="none"
               />
               {
-                errors.emailRequired ? (
-                  <Text>{ errors.emailRequired }</Text>
-                ) : ""
-              }
-              {
-                errors.invalidEmail ? (
-                  <Text>{ errors.invalidEmail }</Text>
+                errors.email ? (
+                  <ErrorText>{ errors.email }</ErrorText>
                 ) : ""
               }
             </View>
@@ -145,18 +144,8 @@ export default function SignUpScreen() {
                 secureTextEntry={true}
               />
               {
-                errors.passwordRequired ? (
-                  <Text>{ errors.passwordRequired }</Text>
-                ) : ""
-              }
-              {
-                errors.passwordTooLong ? (
-                  <Text>{ errors.passwordTooLong }</Text>
-                ) : ""
-              }
-              {
-                errors.passwordTooLong ? (
-                  <Text>{ errors.passwordTooLong }</Text>
+                errors.password ? (
+                  <ErrorText>{ errors.password }</ErrorText>
                 ) : ""
               }
             </View>
@@ -172,7 +161,7 @@ export default function SignUpScreen() {
               />
               {
                 password !== confirmPassword ? (
-                  <Text>Passwords do not match</Text>
+                  <ErrorText>Passwords do not match</ErrorText>
                 ) : ""
               }
             </View>
