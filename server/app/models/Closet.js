@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const closetSchema = new mongoose.Schema({
-  user: {
-    type: Schema.Types.ObjectId, ref: "User"
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User"
   },
   name: {
     type: String,
@@ -16,7 +17,9 @@ const closetSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  items: [{
-    type: Schema.Types.ObjectId, ref: "Item"
-  }]
+  // items: [{
+  //   type: Schema.Types.ObjectId, ref: "Item"
+  // }]
 })
+
+module.exports = mongoose.model("Closet", closetSchema)

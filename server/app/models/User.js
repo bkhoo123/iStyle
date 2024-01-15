@@ -2,10 +2,20 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+<<<<<<< HEAD
   name: {
     type: String,
     required: true,
     unique: true,
+=======
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+>>>>>>> 974d3a0 (created Closet Routes and Cleaned up UserRoutes)
   },
   email: {
     type: String,
@@ -23,6 +33,10 @@ const userSchema = new mongoose.Schema({
   height: {
     type: Number,
     required: true,
+  },
+  isMetric: {
+    type: Boolean,
+    required: true
   }
 })
 
