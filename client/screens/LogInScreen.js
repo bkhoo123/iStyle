@@ -4,11 +4,16 @@ import Palette from "../constants/Palette";
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../store/session";
+import { validateEmail } from "../util/emailValidation";
+import ErrorText from "../components/ErrorText";
 
 export default function LogInScreen() {
     const [ credential, setCredential ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ errors, setErrors ] = useState([]);
+    const dispatch = useDispatch();
 
     const emailInputHandler = (input) => {
         setCredential(input);
@@ -19,6 +24,48 @@ export default function LogInScreen() {
     }
 
     // to-do: handleLogin
+    const handleLogin = async () => {
+        const returningUser = {
+            credential,
+            password
+        }
+
+        setErrors({});
+        const submitErrors = {
+            email: [],
+            password: []
+        };
+
+        console.log(submitErrors, submitErrors.email);
+
+        if (credential.length < 1) {
+            // to-do: email is required
+            submitErrors.email.push("Please enter your email");
+            console.log("submiterror", submitErrors);
+        };
+
+        // to-do: validate email
+        console.log("validate==>", validateEmail(credential))
+        if (!validateEmail(credential)) {
+            submitErrors.email.push("Please enter a valid email");
+        };
+
+        if (password.length < 1) {
+            // to-do: password is required
+            submitErrors.password.push("Please enter your password");
+        };
+
+        console.log("submitErrors", submitErrors, Object.keys(submitErrors));
+
+        if (Object.keys(submitErrors).length > 0) {
+            setErrors(submitErrors);
+            console.log("errors", errors);
+            return;
+        };
+
+
+        return dispatch(loginUser(returningUser));
+    }
 
 	return (
 		<SafeAreaView style={styles.rootContainer}>
@@ -36,6 +83,11 @@ export default function LogInScreen() {
                             onChangeText={emailInputHandler}
                             autoCapitalize="none"
                         />
+                        {
+                            errors.email && errors.email.length ? (
+                                <ErrorText>{ errors.email }</ErrorText>
+                            ) : ""
+                        }
                     </View>
 
                     {/* to-do: password field */}
@@ -48,12 +100,17 @@ export default function LogInScreen() {
                             onChangeText={passwordInputHandler}
                             secureTextEntry={true}
                         />
+                        {
+                            errors.password ? (
+                                <ErrorText>{ errors.password }</ErrorText>
+                            ) : ""
+                        }
                     </View>
                 </View>
 
                 <PrimaryButton
                     buttonText="Login"
-                    // onPress={handleLogin}
+                    onPress={handleLogin}
                 />
 
                 <View style={styles.dividerContainer}>

@@ -1,22 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import StackNavigator from './navigation/StackNavigator';
-
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet } from "react-native";
+import StackNavigator from "./navigation/StackNavigator";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 export default function App() {
-
-
-  return (
-    <StackNavigator style={styles.rootContainer} />
-  );
+	return (
+		<Provider store={store}>
+			<StackNavigator style={styles.rootContainer} />
+		</Provider>
+	);
 }
 
 const styles = StyleSheet.create({
-  rootContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
+	rootContainer: {
+		flex: 1,
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "100%",
+	},
 });
