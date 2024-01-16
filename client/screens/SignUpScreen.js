@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import Palette from "../constants/Palette";
 // import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
@@ -9,12 +9,17 @@ import { useDispatch } from "react-redux";
 import { signup } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
 import ErrorText from "../components/ErrorText";
+import Input from "../components/Input";
+import { unitConversion } from "../util/unitConversion";
 
 export default function SignUpScreen() {
   const [ name, setName ] = useState("");
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+  const [ sex, setSex ] = useState(null);
+  const [ height, setHeight ] = useState(0);
+  const [ isMetric, setIsMetric ] = useState(true);
 	const [errors, setErrors] = useState([]);
   const dispatch = useDispatch();
 
@@ -36,6 +41,29 @@ export default function SignUpScreen() {
     // to-do: error message if password and confirm password fields do not match
 	};
 
+  const genderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Non-binary', value: 'non-binary' }
+  ]
+
+  const handleSexInput = (input) => {
+    setSex(input);
+  }
+
+  const handleMetricChange = (input) => {
+    setIsMetric(value);
+
+    if (height > 0) {
+      const convertedHeight = unitConversion(value, height);
+      setHeight(convertedHeight);
+    }
+  }
+
+  const handleHeightInput = (input) => {
+    setHeight(input);
+  }
+
 	// to-do: handleSignup
   const handleSignUp = async () => {
     const newUser = {
@@ -48,7 +76,9 @@ export default function SignUpScreen() {
     const submitErrors = {
       name: [],
       email: [],
-      password: []
+      password: [],
+      sex: [],
+      height: []
     };
 
     if (name.length < 1) {
@@ -81,6 +111,15 @@ export default function SignUpScreen() {
       submitErrors.password.push("Password must be less than 50 characters long");
     };
 
+    if (!sex) {
+      submitErrors.sex.push("Please select the sex you identify as");
+    }
+
+    if (!height) {
+      submitErrors.height.push("Please enter your height");
+    }
+
+
     console.log("submitErrors", submitErrors, Object.keys(submitErrors));
 
     if (Object.keys(submitErrors).length > 0) {
@@ -100,71 +139,62 @@ export default function SignUpScreen() {
           <Text style={styles.headerText}>Step into a smarter wardrobe.</Text>
 
           <View style={styles.formContainer}>
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Name</Text>
-              <TextInput
-                placeholder="Enter your name"
-                style={styles.formInput}
-                value={name}
-                onChangeText={handleNameInput}
-                autoCapitalize="none"
+              <Input
+                labelText="Name"
+                placeholderText="Enter your name"
+                inputValue={name}
+                handleTextChange={handleNameInput}
+                errors={errors.name}
               />
-              {
-                errors.name ? (
-                  <ErrorText>{ errors.name }</ErrorText>
-                ) : ""
-              }
-            </View>
 
             {/* to-do: email field */}
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Email</Text>
-              <TextInput
-                placeholder="Enter your email"
-                style={styles.formInput}
-                value={credential}
-                onChangeText={handleEmailInput}
-                autoCapitalize="none"
+              <Input
+                labelText="Email"
+                placeholderText="Enter your email"
+                inputValue={credential}
+                handleTextChange={handleEmailInput}
+                errors={errors.email}
               />
-              {
-                errors.email ? (
-                  <ErrorText>{ errors.email }</ErrorText>
-                ) : ""
-              }
-            </View>
 
             {/* to-do: password field */}
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Password</Text>
-              <TextInput
-                placeholder="Enter your password"
-                style={styles.formInput}
-                value={password}
-                onChangeText={handlePasswordInput}
-                secureTextEntry={true}
+              <Input
+                labelText="Password"
+                placeholderText="Enter your password"
+                inputValue={password}
+                handleTextChange={handlePasswordInput}
+                errors={errors.password}
               />
-              {
-                errors.password ? (
-                  <ErrorText>{ errors.password }</ErrorText>
-                ) : ""
-              }
-            </View>
 
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Confirm Password</Text>
-              <TextInput
-                placeholder="Re-enter your password"
-                style={styles.formInput}
-                value={confirmPassword}
-                onChangeText={handleConfirmPasswordInput}
-                secureTextEntry={true}
+              <Input
+                labelText="Confirm Password"
+                placeholderText="Re-enter your password"
+                inputValue={confirmPassword}
+                handleTextChange={handleConfirmPasswordInput}
+                errors={confirmPassword !== "" && password !== confirmPassword ? ["Passwords do not match"] : ""}
               />
-              {
-                password !== confirmPassword ? (
-                  <ErrorText>Passwords do not match</ErrorText>
-                ) : ""
-              }
-            </View>
+
+              <Input
+                labelText="Sex"
+                placeholderText={{ label: 'Select Sex', value: null }}
+                inputType="dropdown"
+                genderOptions={genderOptions}
+                inputValue={sex}
+                handleTextChange={handleSexInput}
+                errors={errors.sex}
+              />
+
+              {/* to-do: add radio button to select metric/imperial */}
+              {/* to-do: add input for metric value */}
+              {/* to-do: add input for imperial value */}
+              <Input
+                labelText="Height"
+                isMetric={isMetric}
+                placeholderText={isMetric ? "E.g. 180" : ["Eg. 5ft", "10in"]}
+                inputType="radio"
+                inputValue={height}
+                handleTextChange={[handleMetricChange, handleHeightInput]}
+                errors={errors.height}
+              />
           </View>
 
           <PrimaryButton
@@ -210,23 +240,7 @@ const styles = StyleSheet.create({
         // marginTop: 10,
         padding: 8
     },
-    formGroup: {
-        width: '100%',
-        paddingHorizontal: 16,
-        borderRadius: 8,
-    },
-    formLabel: {
-        fontSize: 16,
-    },
-    formInput: {
-        color: Palette.primary,
-        marginVertical: 10,
-        width: '100%',
-        borderColor: Palette.primary,
-        borderWidth: 1,
-        padding: 16,
-        fontSize: 16,
-    },
+
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',

@@ -60,7 +60,7 @@ export const restoreUser = () => async (dispatch) => {
 export const signup = (user) => async (dispatch) => {
     try {
         // to-do: update signup backend route
-        const response = await fetch(`/api/users`, {
+        const response = await fetch(`/api/user/signup`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
