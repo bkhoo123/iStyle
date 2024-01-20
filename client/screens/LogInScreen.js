@@ -7,7 +7,6 @@ import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
-import ErrorText from "../components/ErrorText";
 import Input from "../components/Input";
 
 export default function LogInScreen() {
@@ -16,11 +15,11 @@ export default function LogInScreen() {
     const [ errors, setErrors ] = useState([]);
     const dispatch = useDispatch();
 
-    const emailInputHandler = (input) => {
+    const handleEmailInput = (input) => {
         setCredential(input);
     }
 
-    const passwordInputHandler = (input) => {
+    const handlePasswordInput = (input) => {
         setPassword(input);
     }
 
