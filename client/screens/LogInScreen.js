@@ -87,6 +87,7 @@ export default function LogInScreen() {
                         inputValue={password}
                         handleTextChange={handlePasswordInput}
                         errors={errors.password}
+                        isLogin={true}
                     />
 
                     {/* to-do: forgot password? */}

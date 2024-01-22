@@ -69,7 +69,9 @@ export default function SignUpScreen() {
     const newUser = {
       name,
       credential,
-      password
+      password,
+      sex,
+      height
     }
 
     setErrors({});
@@ -123,13 +125,10 @@ export default function SignUpScreen() {
     console.log("submitErrors", submitErrors, Object.keys(submitErrors));
 
     if (Object.keys(submitErrors).length > 0) {
-        setErrors(submitErrors);
-        console.log("errors", errors);
-        return;
+        return setErrors(submitErrors);
     };
 
-
-      // return dispatch(signup(newUser));
+    return dispatch(signup(newUser));
   }
 
 	return (
