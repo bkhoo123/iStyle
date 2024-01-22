@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
   height: {
     type: Number,
     required: true,
+  },
+  isMetric: {
+    type: Boolean,
+    required: true
   }
 })
 
