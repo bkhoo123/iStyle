@@ -3,6 +3,7 @@ import React from 'react'
 import ErrorText from './ErrorText'
 import Palette from '../constants/Palette'
 import RNPickerSelect from 'react-native-picker-select';
+import SecondaryButton from './SecondaryButton';
 
 export default function Input({ labelText, placeholderText, inputValue, handleTextChange, errors, inputType, genderOptions }) {
 
@@ -46,6 +47,11 @@ export default function Input({ labelText, placeholderText, inputValue, handleTe
             autoCapitalize="none"
             secureTextEntry={labelText.includes("Password") ? true : false}
         />
+        {
+            labelText.includes("Password") ? (
+                <SecondaryButton buttonText="Forgot Password?" buttonLink="RetrievePassword" />
+            ) : ""
+        }
         {
             errors ? (
                 <ErrorText>{ errors }</ErrorText>

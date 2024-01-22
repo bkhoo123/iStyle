@@ -116,7 +116,7 @@ export default function Navigation() {
 	}
 
     // FOR TESTING:
-    const user = true;
+    const user = false;
     const isLoaded = true;
 
 
