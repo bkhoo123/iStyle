@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
     console.log(userExists, 'userExists')
 
     // Create a new user
-    const {name, email, password, sex, height} = req.body;
+    const {firstName, lastName, email, password, sex, height} = req.body;
 
     const user = new User({firstName, lastName, email, password, sex, height})
 
@@ -43,34 +43,54 @@ router.post('/login', async (req, res) => {
 			return res.status(400).send("Invalid email or password");
 		}
 
-		return res.json({
-			user: user.toSafeObject(),
-		});
+    res.send("Logged in successfully")
+  } catch (error) {
+    res.status(500).send('Error during login: ' + error.message)
+  }
+})
 
-	} catch (error) {
-		res.status(500).send("Error during login: " + error.message);
-	}
-});
-
-router.get("/", async (req, res) => {
-	try {
-		const { user } = req;
-
-		if (user) {
-			return res.json({
-				user: user.toSafeObject(),
-			});
-		}
-	} catch (error) {
-		res.status(500).send("Error during login: " + error.message);
-	}
-});
-
-router.delete("/", async (req, res) => {
+// Route to Delete a User
+router.delete("/:userId", async (req, res) => {
   try {
+    const { userId } = req.params
+
+    if (!userId) {
+      return res.status(404).send("User not found or already deleted.")
+    }
+
+    // If all goes well confirm the deletion to the client
+    res.status(200).send("User deleted successfully")
 
   } catch (error) {
-    res.status(500).send("")
+    res.status(500).send("Error during deletion: " + error.mesesage)
+  }
+})
+
+// Route to create a new closet for a user
+router.post("/:userId/closets", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+    }
+
+    const { name, type, notes} = req.body;
+
+    const newCloset = new Closet({
+      name: name,
+      type: type,
+      notes: notes,
+      user: userId
+    })
+
+    const savedCloset = await newCloset.save();
+
+    res.status(201).json(savedCloset)
+
+  } catch (error) {
+    res.status(500).send(error.message)
   }
 })
 
