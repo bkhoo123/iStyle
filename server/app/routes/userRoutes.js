@@ -15,9 +15,10 @@ router.post('/signup', async (req, res) => {
     console.log(userExists, 'userExists')
 
     // Create a new user 
-    const {firstName, lastName, email, password, sex, height} = req.body;
+    const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
+     
 
-    const user = new User({firstName, lastName, email, password, sex, height})
+    const user = new User({firstName, lastName, email, password, sex, height, isMetric})
 
     console.log(user, "user")
 
@@ -50,6 +51,26 @@ router.post('/login', async (req, res) => {
   }
 })
 
+// Route to find a user by userId
+router.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    if (!userId) {
+      return res.status(400).send("User Id is required")
+    }
+
+    const user = await User.findOne({userId: userId})
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+
+    res.send(user)
+  } catch (error) {
+    res.status(500).send("Error retrieving user by userId " + error.message)
+  }
+})
+
 // Route to Delete a User 
 router.delete("/:userId", async (req, res) => {
   try {
@@ -79,9 +100,19 @@ router.post("/:userId/closets", async (req, res) => {
 
     const { name, type, notes} = req.body;
 
+    const newCloset = new Closet({
+      name: name,
+      type: type,
+      notes: notes,
+      user: userId
+    })
+
+    const savedCloset = await newCloset.save();
+
+    res.status(201).json(savedCloset)
 
   } catch (error) {
-
+    res.status(500).send(error.message)
   }
 })
 
