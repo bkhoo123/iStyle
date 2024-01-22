@@ -89,8 +89,6 @@ export default function LogInScreen() {
                         errors={errors.password}
                         isLogin={true}
                     />
-
-                    {/* to-do: forgot password? */}
                 </View>
 
                 <PrimaryButton
