@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const userRoutes = require("./app/routes/userRoutes")
 const closetRoutes = require("./app/routes/closetRoutes")
+const googleAuthRoutes = require("./app/routes/googleAuthRoutes");
 
 // const User = require('./app/models/User');
 
@@ -12,6 +13,8 @@ app.use(express.json()) // middleware so that it uses Json
 
 app.use('/user', userRoutes) // This prefixes all user routes with '/user'
 app.use('/closet', closetRoutes) // This prefixes all closet routes with "/closet"
+app.use("/auth/google", googleAuthRoutes); // This prefixes all closet routes with "/closet"
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -26,4 +29,3 @@ mongoose.connect(`mongodb+srv://${username}:${password}@istyle.il9j72h.mongodb.n
 mongoose.connection.once('open', () => {
   console.log('Connected to MongoDB');
 });
-
