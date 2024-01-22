@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { url } from '../util/url';
 
 const sessionSlice = createSlice({
     name: "user",
@@ -27,7 +28,7 @@ export const loginUser = (user) => async (dispatch) => {
         const { credential, password } = user;
 
         // to-do: update backend route
-        const response = await fetch('/api/session', {
+        const response = await fetch(`${url}/user/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -47,7 +48,7 @@ export const loginUser = (user) => async (dispatch) => {
 export const restoreUser = () => async (dispatch) => {
     try {
         // to-do: update backend route
-        const response = await fetch('/api/session');
+        const response = await fetch(`${url}/user/login`);
         const data = await response.json();
 
         dispatch(loadUser(data.user));
@@ -60,7 +61,7 @@ export const restoreUser = () => async (dispatch) => {
 export const signup = (user) => async (dispatch) => {
     try {
         // to-do: update signup backend route
-        const response = await fetch(`/api/user/signup`, {
+        const response = await fetch(`${url}/user/signup`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
