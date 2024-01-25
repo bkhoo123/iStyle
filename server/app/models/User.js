@@ -44,19 +44,4 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-// Return only relevent information
-userSchema.methods.toSafeObject = function () {
-    const {
-        _id,
-        email,
-        name,
-    } = this;
-
-    return {
-        id: _id,
-        email,
-        name,
-    };
-}
-
 module.exports = mongoose.model('User', userSchema);
