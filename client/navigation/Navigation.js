@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useEffect } from "react";
 import LogInScreen from "../screens/LogInScreen";
 import Palette from "../constants/Palette";
 import SignUpScreen from "../screens/SignUpScreen";
@@ -14,7 +14,8 @@ import HomeScreen from "../screens/HomeScreen";
 import { Ionicons } from '@expo/vector-icons';
 import Header from "../components/Header";
 import Logo from "../components/Logo";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { restoreUser } from "../store/session";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -100,12 +101,15 @@ function BottomTabNavigator() {
 }
 
 export default function Navigation() {
-
+	const dispatch = useDispatch();
 	// FOR TESTING:
     // const user = false;
-	const user = useSelector((state) => state.session.user);
-	console.log("USER!!:", user);
+	const userIsLoggedIn = useSelector((state) => state.session.isLoggedIn);
     const isLoaded = true;
+
+	useEffect(() => {
+		dispatch(restoreUser());
+	}, [userIsLoggedIn]);
 
     const [fontsLoaded, fontError] = useFonts({
 		Montserrat_400Regular,
@@ -129,7 +133,7 @@ export default function Navigation() {
             <NavigationContainer style={styles.screen} onLayout={onLayoutRootView}>
 
                 {
-                    user ? (
+                    userIsLoggedIn ? (
                         <AuthenticatedStack />
                     ) : (
                         <AuthStack />

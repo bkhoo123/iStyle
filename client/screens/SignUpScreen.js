@@ -75,41 +75,29 @@ export default function SignUpScreen() {
     }
 
     setErrors({});
-    const submitErrors = {
-      name: [],
-      email: [],
-      password: [],
-      sex: [],
-      height: []
-    };
+    const submitErrors = {};
 
     if (name.length < 1) {
-      // to-do: name is required
       submitErrors.name.push("Please enter your name");
     };
 
     if (credential.length < 1) {
-      // to-do: email is required
       submitErrors.email.push("Please enter your email");
     };
 
-    // to-do: validate email
     if (!validateEmail(credential)) {
       submitErrors.email.push("Please enter a valid email");
     };
 
     if (password.length < 1) {
-      // to-do: password is required
       submitErrors.password.push("Please enter a password");
     };
 
     if (password.length < 8) {
-      // to-do: password length must be at least 8 characters long
       submitErrors.password.push("Password must be at least 8 characters long");
     };
 
     if (password.length > 50) {
-      // to-do: password length must be less than 50 characters long
       submitErrors.password.push("Password must be less than 50 characters long");
     };
 
@@ -120,9 +108,6 @@ export default function SignUpScreen() {
     if (!height) {
       submitErrors.height.push("Please enter your height");
     }
-
-
-    console.log("submitErrors", submitErrors, Object.keys(submitErrors));
 
     if (Object.keys(submitErrors).length > 0) {
         return setErrors(submitErrors);
