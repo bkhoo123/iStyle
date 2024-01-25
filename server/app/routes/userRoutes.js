@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Closet = require('../models/Closet')
 const bcrypt = require('bcryptjs');
 
+// Sign up Route
 router.post('/signup', async (req, res) => {
   try {
     // Check if the user already exists
@@ -13,10 +14,10 @@ router.post('/signup', async (req, res) => {
     }
     console.log(userExists, 'userExists')
 
-    // Create a new user
-    const {firstName, lastName, email, password, sex, height} = req.body;
-
-    const user = new User({firstName, lastName, email, password, sex, height})
+    // Create a new user 
+    const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
+     
+    const user = new User({firstName, lastName, email, password, sex, height, isMetric})
 
 		console.log(user, "user");
 
@@ -28,7 +29,7 @@ router.post('/signup', async (req, res) => {
 	}
 });
 
-
+// Login Route
 router.post('/login', async (req, res) => {
   try {
     // Find the user by email
@@ -52,6 +53,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 
+// Restore User Route
 router.get("/", async (req, res) => {
 	try {
 		const { user } = req;
@@ -66,11 +68,68 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.delete("/", async (req, res) => {
+// Route to find a user by userId
+router.get("/:userId", async (req, res) => {
   try {
+    const { userId } = req.params
+
+    if (!userId) {
+      return res.status(400).send("User Id is required")
+    }
+
+    const user = await User.findOne({userId: userId})
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+
+    res.send(user)
+  } catch (error) {
+    res.status(500).send("Error retrieving user by userId " + error.message)
+  }
+})
+
+// Route to Delete a User 
+router.delete("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    if (!userId) {
+      return res.status(404).send("User not found or already deleted.")
+    }
+
+    // If all goes well confirm the deletion to the client
+    res.status(200).send("User deleted successfully")
 
   } catch (error) {
-    res.status(500).send("")
+    res.status(500).send("Error during deletion: " + error.mesesage)
+  }
+})
+
+// Route to create a new closet for a user
+router.post("/:userId/closets", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+    }
+
+    const { name, type, notes} = req.body;
+
+    const newCloset = new Closet({
+      name: name,
+      type: type,
+      notes: notes,
+      user: userId
+    })
+
+    const savedCloset = await newCloset.save();
+
+    res.status(201).json(savedCloset)
+
+  } catch (error) {
+    res.status(500).send(error.message)
   }
 })
 
