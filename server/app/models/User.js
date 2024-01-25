@@ -21,15 +21,15 @@ const userSchema = new mongoose.Schema({
   },
   sex: {
     type: String,
-    required: true,
+    required: false,
   },
   height: {
     type: Number,
-    required: true,
+    required: false,
   },
   isMetric: {
     type: Boolean,
-    required: true
+    required: false
   }
 })
 
