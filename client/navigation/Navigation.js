@@ -14,6 +14,7 @@ import HomeScreen from "../screens/HomeScreen";
 import { Ionicons } from '@expo/vector-icons';
 import Header from "../components/Header";
 import Logo from "../components/Logo";
+import { useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -100,6 +101,12 @@ function BottomTabNavigator() {
 
 export default function Navigation() {
 
+	// FOR TESTING:
+    // const user = false;
+	const user = useSelector((state) => state.session.user);
+	console.log("USER!!:", user);
+    const isLoaded = true;
+
     const [fontsLoaded, fontError] = useFonts({
 		Montserrat_400Regular,
 		Montserrat_600SemiBold,
@@ -115,9 +122,7 @@ export default function Navigation() {
 		return null;
 	}
 
-    // FOR TESTING:
-    const user = false;
-    const isLoaded = true;
+
 
 
 	return isLoaded ? (

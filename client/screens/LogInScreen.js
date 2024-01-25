@@ -5,7 +5,7 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../store/session";
+import { loadUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
 import Input from "../components/Input";
 
@@ -31,12 +31,9 @@ export default function LogInScreen() {
         }
 
         setErrors({});
-        const submitErrors = {
-            email: [],
-            password: []
-        };
+        const submitErrors = {};
 
-        console.log(submitErrors, submitErrors.email);
+        console.log(submitErrors, "!!!", submitErrors.email);
 
         if (credential.length < 1) {
             // to-do: email is required
@@ -63,8 +60,10 @@ export default function LogInScreen() {
             return;
         };
 
+        console.log("clicked login button")
+        console.log("returningUser:", returningUser)
 
-        return dispatch(loginUser(returningUser));
+        return dispatch(loadUser(returningUser));
     }
 
 	return (
