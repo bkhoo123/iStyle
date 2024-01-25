@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Palette.border,
     height: 180,
-    width: 'max-content',
 
   }
 })
