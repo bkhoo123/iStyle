@@ -5,18 +5,18 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
-import { loadUser } from "../store/session";
+import { loadUser, loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
 import Input from "../components/Input";
 
 export default function LogInScreen() {
-    const [ credential, setCredential ] = useState("");
+    const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ errors, setErrors ] = useState([]);
     const dispatch = useDispatch();
 
     const handleEmailInput = (input) => {
-        setCredential(input);
+        setEmail(input);
     }
 
     const handlePasswordInput = (input) => {
@@ -26,44 +26,31 @@ export default function LogInScreen() {
     // to-do: handleLogin
     const handleLogin = async () => {
         const returningUser = {
-            credential,
-            password
+            email,
+            password,
+            isLoggedIn: true
         }
 
         setErrors({});
         const submitErrors = {};
 
-        console.log(submitErrors, "!!!", submitErrors.email);
-
-        if (credential.length < 1) {
-            // to-do: email is required
+        if (email.length < 1) {
             submitErrors.email.push("Please enter your email");
-            console.log("submiterror", submitErrors);
         };
 
-        // to-do: validate email
-        console.log("validate==>", validateEmail(credential))
-        if (!validateEmail(credential)) {
+        if (!validateEmail(email)) {
             submitErrors.email.push("Please enter a valid email");
         };
 
         if (password.length < 1) {
-            // to-do: password is required
             submitErrors.password.push("Please enter your password");
         };
 
-        console.log("submitErrors", submitErrors, Object.keys(submitErrors));
-
         if (Object.keys(submitErrors).length > 0) {
-            setErrors(submitErrors);
-            console.log("errors", errors);
-            return;
+            return setErrors(submitErrors);
         };
 
-        console.log("clicked login button")
-        console.log("returningUser:", returningUser)
-
-        return dispatch(loadUser(returningUser));
+        return dispatch(loginUser(returningUser));
     }
 
 	return (
@@ -75,7 +62,7 @@ export default function LogInScreen() {
                     <Input
                         labelText="Email"
                         placeholderText="Enter your email"
-                        inputValue={credential}
+                        inputValue={email}
                         handleTextChange={handleEmailInput}
                         errors={errors.email}
                     />

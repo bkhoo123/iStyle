@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
-    type: String, 
-    required: true, 
+    type: String,
+    required: true,
     unique: true,
   },
   email: {
@@ -14,10 +14,10 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true, 
+    required: true,
   },
   sex: {
-    type: String, 
+    type: String,
     required: true,
   },
   height: {
@@ -36,5 +36,20 @@ userSchema.pre('save', async function(next) {
   }
   next();
 });
+
+// Return only relevent information
+userSchema.methods.toSafeObject = function () {
+    const {
+        _id,
+        email,
+        name,
+    } = this;
+
+    return {
+        id: _id,
+        email,
+        name,
+    };
+}
 
 module.exports = mongoose.model('User', userSchema);
