@@ -12,7 +12,6 @@ export const restoreUser = createAsyncThunk(`user/restoreUser`, async () => {
     const response = await fetchRestoreUser();
     const data = await response.json();
     return data;
-
 })
 
 export const signUpUser = createAsyncThunk(`user/signUpUser`, async (user) => {
