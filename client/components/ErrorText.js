@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
 export default function ErrorText({ children }) {
-    console.log("children", children);
   return (
     <View style={styles.errorContainer}>
         { Array.isArray(children) ? (children.map( (child, idx) => (

@@ -3,8 +3,9 @@ import React from 'react'
 import ErrorText from './ErrorText'
 import Palette from '../constants/Palette'
 import RNPickerSelect from 'react-native-picker-select';
+import SecondaryButton from './SecondaryButton';
 
-export default function Input({ labelText, placeholderText, inputValue, handleTextChange, errors, inputType, genderOptions }) {
+export default function Input({ labelText, placeholderText, inputValue, handleTextChange, errors, inputType, genderOptions, isLogin }) {
 
     if (inputType === "radio") {
         return (
@@ -20,12 +21,15 @@ export default function Input({ labelText, placeholderText, inputValue, handleTe
         return (
             <View style={styles.formGroup}>
                 <Text style={styles.formLabel}>{ labelText }</Text>
-                <RNPickerSelect
-                    placeholder={placeholderText}
-                    items={genderOptions}
-                    value={inputValue}
-                    onValueChange={handleTextChange}
-                />
+                <View style={styles.dropdown}>
+                    <RNPickerSelect
+                        placeholder={placeholderText}
+                        items={genderOptions}
+                        value={inputValue}
+                        onValueChange={handleTextChange}
+                        style={pickerSelectStyles}
+                    />
+                </View>
                 {
                     errors ? (
                         <ErrorText>{ errors }</ErrorText>
@@ -47,6 +51,11 @@ export default function Input({ labelText, placeholderText, inputValue, handleTe
             secureTextEntry={labelText.includes("Password") ? true : false}
         />
         {
+            labelText.includes("Password") && isLogin ? (
+                <SecondaryButton buttonText="Forgot Password?" buttonLink="RetrievePassword" />
+            ) : ""
+        }
+        {
             errors ? (
                 <ErrorText>{ errors }</ErrorText>
             ) : ""
@@ -59,7 +68,6 @@ const styles = StyleSheet.create({
     formGroup: {
         width: '100%',
         paddingHorizontal: 16,
-        borderRadius: 8,
     },
     formLabel: {
         fontSize: 16,
@@ -73,4 +81,19 @@ const styles = StyleSheet.create({
         padding: 16,
         fontSize: 16,
     },
+    dropdown: {
+        padding: 16,
+        borderWidth: 1,
+        borderColor: Palette.primary,
+        marginVertical: 10,
+    }
 })
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+  },
+  inputAndroid: {
+    fontSize: 16,
+  },
+});

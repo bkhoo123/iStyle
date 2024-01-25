@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const User = require('../models/User');
 const Closet = require('../models/Closet')
@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 // Sign up Route
 router.post('/signup', async (req, res) => {
   try {
-    // Check if the user already exists 
+    // Check if the user already exists
     const userExists = await User.findOne({email: req.body.email})
     if (userExists) {
       return res.status(400).send("Email already in use")
@@ -17,39 +17,56 @@ router.post('/signup', async (req, res) => {
     // Create a new user 
     const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
      
-
     const user = new User({firstName, lastName, email, password, sex, height, isMetric})
 
-    console.log(user, "user")
+		console.log(user, "user");
 
-    // Save the user in the database
-    await user.save();
-    res.status(201).send("User created Successfully")
-  } catch (error) {
-    res.status(500).send('Error during registration: ' + error.message )
-  }
-})
+		// Save the user in the database
+		await user.save();
+		res.status(201).send("User created Successfully");
+	} catch (error) {
+		res.status(500).send("Error during registration: " + error.message);
+	}
+});
 
 // Login Route
 router.post('/login', async (req, res) => {
   try {
-    // Find the user by email 
+    // Find the user by email
     const user = await User.findOne({ email: req.body.email})
     if (!user) {
       return res.status(400).send('Invalid email or password')
     }
 
-    // Check if password is correct
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(400).send("Invalid email or password")
-    }
+		// Check if password is correct
+		const isMatch = await bcrypt.compare(req.body.password, user.password);
+		if (!isMatch) {
+			return res.status(400).send("Invalid email or password");
+		}
 
-    res.send("Logged in successfully")
-  } catch (error) {
-    res.status(500).send('Error during login: ' + error.message)
-  }
-})
+		return res.json({
+			user: user.toSafeObject(),
+		});
+
+	} catch (error) {
+		res.status(500).send("Error during login: " + error.message);
+	}
+});
+
+// Restore User Route
+router.get("/", async (req, res) => {
+	try {
+		const { user } = req;
+
+		if (user) {
+			return res.json({
+				user: user.toSafeObject(),
+			});
+		}
+	} catch (error) {
+		res.status(500).send("Error during login: " + error.message);
+	}
+});
 
 // Route to find a user by userId
 router.get("/:userId", async (req, res) => {

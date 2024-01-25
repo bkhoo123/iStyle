@@ -5,65 +5,50 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../store/session";
+import { loadUser, loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
-import ErrorText from "../components/ErrorText";
 import Input from "../components/Input";
 
 export default function LogInScreen() {
-    const [ credential, setCredential ] = useState("");
+    const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ errors, setErrors ] = useState([]);
     const dispatch = useDispatch();
 
-    const emailInputHandler = (input) => {
-        setCredential(input);
+    const handleEmailInput = (input) => {
+        setEmail(input);
     }
 
-    const passwordInputHandler = (input) => {
+    const handlePasswordInput = (input) => {
         setPassword(input);
     }
 
     // to-do: handleLogin
     const handleLogin = async () => {
         const returningUser = {
-            credential,
-            password
+            email,
+            password,
+            isLoggedIn: true
         }
 
         setErrors({});
-        const submitErrors = {
-            email: [],
-            password: []
-        };
+        const submitErrors = {};
 
-        console.log(submitErrors, submitErrors.email);
-
-        if (credential.length < 1) {
-            // to-do: email is required
+        if (email.length < 1) {
             submitErrors.email.push("Please enter your email");
-            console.log("submiterror", submitErrors);
         };
 
-        // to-do: validate email
-        console.log("validate==>", validateEmail(credential))
-        if (!validateEmail(credential)) {
+        if (!validateEmail(email)) {
             submitErrors.email.push("Please enter a valid email");
         };
 
         if (password.length < 1) {
-            // to-do: password is required
             submitErrors.password.push("Please enter your password");
         };
 
-        console.log("submitErrors", submitErrors, Object.keys(submitErrors));
-
         if (Object.keys(submitErrors).length > 0) {
-            setErrors(submitErrors);
-            console.log("errors", errors);
-            return;
+            return setErrors(submitErrors);
         };
-
 
         return dispatch(loginUser(returningUser));
     }
@@ -77,7 +62,7 @@ export default function LogInScreen() {
                     <Input
                         labelText="Email"
                         placeholderText="Enter your email"
-                        inputValue={credential}
+                        inputValue={email}
                         handleTextChange={handleEmailInput}
                         errors={errors.email}
                     />
@@ -88,9 +73,8 @@ export default function LogInScreen() {
                         inputValue={password}
                         handleTextChange={handlePasswordInput}
                         errors={errors.password}
+                        isLogin={true}
                     />
-
-                    {/* to-do: forgot password? */}
                 </View>
 
                 <PrimaryButton
