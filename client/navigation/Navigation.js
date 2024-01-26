@@ -11,11 +11,12 @@ import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from "@expo-g
 import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import HomeScreen from "../screens/HomeScreen";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Header from "../components/Header";
 import Logo from "../components/Logo";
 import { useDispatch, useSelector } from "react-redux";
 import { restoreUser } from "../store/session";
+import CreateClosetScreen from "../screens/Closet/CreateClosetScreen";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -54,7 +55,8 @@ function AuthenticatedStack() {
 			<Header />
 			<Stack.Navigator>
 				<Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
-				<Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+				{/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
+				<Stack.Screen name="CreateCloset" component={CreateClosetScreen} options={{ headerShown: false }} />
 			</Stack.Navigator>
 		</SafeAreaView>
 	);
@@ -93,6 +95,17 @@ function BottomTabNavigator() {
 					tabBarLabel: 'Home',
 					tabBarIcon: ({ focused, color }) => (
 						<Ionicons name="ios-home" size={24} color={color} focused={focused} />
+					),
+				}}
+			/>
+			<BottomTabs.Screen
+				name="CreateCloset"
+				component={CreateClosetScreen}
+				options={{
+					headerShown: false,
+					tabBarLabel: 'Create Closet',
+					tabBarIcon: ({ focused, color }) => (
+						<AntDesign name="pluscircle" size={24} color="black" />
 					),
 				}}
 			/>

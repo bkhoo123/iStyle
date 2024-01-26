@@ -15,6 +15,14 @@ export const restoreUser = createAsyncThunk(`user/restoreUser`, async () => {
 
 })
 
+export const signUpUser = createAsyncThunk(`user/signUpUser`, async (user) => {
+    console.log("USER", user)
+    const response = await fetchSignUp(user);
+    const data = await response.json();
+    console.log("data__", data);
+    return data;
+})
+
 const sessionSlice = createSlice({
     name: "user",
     initialState: {
@@ -24,7 +32,7 @@ const sessionSlice = createSlice({
     reducers: {
         removeUser: (state) => {
             state.user = null;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -41,6 +49,14 @@ const sessionSlice = createSlice({
                 state.isLoggedIn = true;
             })
             .addCase(restoreUser.rejected, (state) => {
+                state.user = null;
+                state.isLoggedIn = false;
+            })
+            .addCase(signUpUser.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.isLoggedIn = true;
+            })
+            .addCase(signUpUser.rejected, (state) => {
                 state.user = null;
                 state.isLoggedIn = false;
             })
@@ -83,19 +99,24 @@ export const fetchRestoreUser = async () => {
     }
 }
 
-/***
-// restore user
-export const restoreUser = () => async (dispatch) => {
+// sign up user
+export const fetchSignUp = async (user) => {
     try {
-        // to-do: update backend route
-        const response = await fetch(`${url}/user/login`);
-        const data = await response.json();
-
-        dispatch(loadUser(data.user));
-    } catch(error) {
-        console.error('Error restoring user data:', error);
+        console.log("USER:::", user)
+        const response = await fetch(`${url}/user/signup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        });
+        return response;
+    } catch (error) {
+        console.error('Error signing up:', error);
     }
 }
+
+/***
 
 // sign up user
 export const signup = (user) => async (dispatch) => {
