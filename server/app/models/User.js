@@ -49,13 +49,15 @@ userSchema.methods.toSafeObject = function () {
     const {
         _id,
         email,
-        name,
+        firstName,
+        lastName
     } = this;
 
     return {
         id: _id,
         email,
-        name,
+        firstName,
+        lastName
     };
 }
 

@@ -14,16 +14,17 @@ router.post('/signup', async (req, res) => {
     }
     console.log(userExists, 'userExists')
 
-    // Create a new user 
-    const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
-     
-    const user = new User({firstName, lastName, email, password, sex, height, isMetric})
+    // Create a new user
+    const {firstName, lastName, email, password} = req.body;
+
+    const user = new User({firstName, lastName, email, password})
 
 		console.log(user, "user");
 
 		// Save the user in the database
 		await user.save();
-		res.status(201).send("User created Successfully");
+		// res.status(201).send("User created Successfully");
+    return res.status(201).json(user.toSafeObject());
 	} catch (error) {
 		res.status(500).send("Error during registration: " + error.message);
 	}
@@ -44,9 +45,7 @@ router.post('/login', async (req, res) => {
 			return res.status(400).send("Invalid email or password");
 		}
 
-		return res.json({
-			user: user.toSafeObject(),
-		});
+		return res.json(user.toSafeObject());
 
 	} catch (error) {
 		res.status(500).send("Error during login: " + error.message);
@@ -88,7 +87,7 @@ router.get("/:userId", async (req, res) => {
   }
 })
 
-// Route to Delete a User 
+// Route to Delete a User
 router.delete("/:userId", async (req, res) => {
   try {
     const { userId } = req.params
