@@ -24,6 +24,33 @@ router.get("/:userId", async (req, res) => {
   }
 })
 
+// Route to update a closet by closetId
+router.put("/:closetId", async (req, res) => {
+  try {
+    const { closetId } = req.params;
+    const { name, type, notes } = req.body;
+
+    // Update the closet
+    const updatedCloset = await Closet.findByIdAndUpdate(
+      closetId,
+      { name, type, notes },
+      { new: true }  // This option returns the modified document rather than the original
+    );
+
+    // If no closet was found with the given ID
+    if (!updatedCloset) {
+      return res.status(404).send("Closet not found");
+    }
+
+    // Send the updated closet as a response
+    res.status(200).json(updatedCloset);
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
 // Route to create a new closet for a user
 router.post("/:userId", async (req, res) => {
   try {
@@ -56,7 +83,25 @@ router.post("/:userId", async (req, res) => {
   }
 })
 
-//
+// Route to delete a closet by closetId
+router.delete("/:closetId", async (req, res) => {
+  try {
+    const { closetId } = req.params
+
+    // Find the closet and delete it 
+    const deletedCloset = await Closet.findByIdAndDelete(closetId)
+
+    // If no closet was found with the given ID
+    if (!deletedCloset) {
+      return res.status(404).send("Closet not found")
+    }
+
+    res.status(200).send(`Closet with ID ${closetId} successfully deleted`)
+
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
 
 
 
