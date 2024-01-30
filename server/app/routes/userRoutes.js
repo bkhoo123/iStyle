@@ -67,33 +67,40 @@ router.get("/", async (req, res) => {
 	}
 });
 
-// Route to find a user by userId
-router.get("/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params
+// // Route to find a user by email
+// router.get("/", async (req, res) => {
+//   try {
+//     const { email } = req.body
 
-    if (!userId) {
-      return res.status(400).send("User Id is required")
-    }
+//     if (!email) {
+//       return res.status(400).send("User's email is required")
+//     }
 
-    const user = await User.findOne({userId: userId})
-    if (!user) {
-      return res.status(404).send("User not found")
-    }
+//     const user = await User.findOne({email: email})
+//     if (!user) {
+//       return res.status(404).send("User not found")
+//     }
 
-    res.send(user)
-  } catch (error) {
-    res.status(500).send("Error retrieving user by userId " + error.message)
-  }
-})
+//     // sends the user data back to the client
+//     return res.json(user)
+//   } catch (error) {
+//     res.status(500).send("Error retrieving user by userId " + error.message)
+//   }
+// })
 
 // Route to Delete a User
-router.delete("/:userId", async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    const { userId } = req.params
+    const { email } = req.body
 
-    if (!userId) {
+    if (!email) {
       return res.status(404).send("User not found or already deleted.")
+    }
+
+    const user = await User.deleteOne({email: email})
+
+    if (!user) {
+      return res.status(404).send("User couldn't be deleted cause they don't exist")
     }
 
     // If all goes well confirm the deletion to the client
@@ -105,7 +112,7 @@ router.delete("/:userId", async (req, res) => {
 })
 
 // Route to create a new closet for a user
-router.post("/:userId/closets", async (req, res) => {
+router.post("/closets", async (req, res) => {
   try {
     const { userId } = req.params
 
