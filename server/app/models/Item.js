@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const itemSchema = new mongoose.Schema({
-  item_name: {
+  itemName: {
     type: String,
     required: true
   },
-  closet_id : {
+  closetId : {
     type: Schema.Types.ObjectId,
     ref: "Closet",
     required: true
@@ -41,6 +41,10 @@ const itemSchema = new mongoose.Schema({
   },
   notes: {
     type: String,
+    required: false
+  },
+  itemImages: {
+    type: [String],
     required: false
   }
 })
