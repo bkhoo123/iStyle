@@ -47,6 +47,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).send("Invalid email or password");
     }
 
+    console.log("Checking user", user);
+
     // If user signed up via Google, redirect to Google Auth
     if (user.isGoogleAccount) {
       return res.redirect("/auth/google");

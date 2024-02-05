@@ -31,9 +31,15 @@ passport.use(
           } else {
             // No user with this email or Google ID exists, create new user
             const newUser = new User({
+              firstName: profile.name?.givenName || "User FirstName",
+              lastName: profile.name?.familyName || "User LastName",
+              email: profile.emails[0]?.value,
               // ... map profile fields to your User model ...
               googleId: profile.id,
               isGoogleAccount: true,
+              sex: "Not Specified", // Default or handle as needed
+              height: 0, // Default or handle as needed
+              isMetric: true, // Default or handle as needed
             });
 
             user = await newUser.save();
