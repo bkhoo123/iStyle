@@ -3,14 +3,44 @@ const router = express.Router();
 const User = require("../models/User");
 const Closet = require("../models/Closet");
 const bcrypt = require("bcryptjs");
+const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport");
+
+// Passport Local Strategy for email/password login
+passport.use(
+  new LocalStrategy(
+    { usernameField: "email" },
+    async (email, password, done) => {
+      // Match User
+      const user = await User.findOne({ email });
+      if (!user) {
+        return done(null, false, { message: "Email is not registered" });
+      }
+
+      // Match Password
+      try {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+          return done(null, user);
+        } else {
+          return done(null, false, { message: "Password incorrect" });
+        }
+      } catch (e) {
+        return done(e);
+      }
+    }
+  )
+);
 
 // Sign up Route
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res, next) => {
   try {
     // Check if the user already exists
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
-      return res.status(400).send("Email already in use");
+      const error = new Error("Email already in use");
+      error.status = 400;
+      throw error;
     }
     console.log(userExists, "userExists");
 
@@ -32,38 +62,63 @@ router.post("/signup", async (req, res) => {
 
     // Save the user in the database
     await user.save();
-    res.status(201).send("User created Successfully");
+
+    // Log the user in with passport
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send("User created and logged in successfully");
+    });
   } catch (error) {
-    res.status(500).send("Error during registration: " + error.message);
+    error.message = "Error during registration: " + error.message;
+    next(error);
   }
 });
 
 // Login Route
-router.post("/login", async (req, res) => {
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email: req.body.email });
+router.post("/login", async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    console.log("checking err", err, user, info);
+    if (err) {
+      return next(err);
+    }
     if (!user) {
-      return res.status(400).send("Invalid email or password");
+      const error = new Error(info.message);
+      error.status = 400;
+      return next(error);
     }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.send("Logged in successfully");
+    });
+  })(req, res, next);
+  // try {
+  //   // Find the user by email
+  //   const user = await User.findOne({ email: req.body.email });
+  //   if (!user) {
+  //     return res.status(400).send("Invalid email or password");
+  //   }
 
-    console.log("Checking user", user);
+  //   console.log("Checking user", user);
 
-    // If user signed up via Google, redirect to Google Auth
-    if (user.isGoogleAccount) {
-      return res.redirect("/auth/google");
-    }
+  //   // If user signed up via Google, redirect to Google Auth
+  //   if (user.isGoogleAccount) {
+  //     return res.redirect("/auth/google");
+  //   }
 
-    // User signed up traditionally, proceed with password check
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(400).send("Invalid email or password");
-    }
+  //   // User signed up traditionally, proceed with password check
+  //   const isMatch = await bcrypt.compare(req.body.password, user.password);
+  //   if (!isMatch) {
+  //     return res.status(400).send("Invalid email or password");
+  //   }
 
-    res.send("Logged in successfully");
-  } catch (error) {
-    res.status(500).send("Error during login: " + error.message);
-  }
+  //   res.send("Logged in successfully");
+  // } catch (error) {
+  //   res.status(500).send("Error during login: " + error.message);
+  // }
 });
 
 // Route to find a user by userId
@@ -72,17 +127,22 @@ router.get("/:userId", async (req, res) => {
     const { userId } = req.params;
 
     if (!userId) {
-      return res.status(400).send("User Id is required");
+      const error = new Error("User Id is required");
+      error.status = 400;
+      throw error;
     }
 
     const user = await User.findOne({ userId: userId });
     if (!user) {
-      return res.status(404).send("User not found");
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
     }
 
     res.send(user);
   } catch (error) {
-    res.status(500).send("Error retrieving user by userId " + error.message);
+    error.message = "Error retrieving user by userId " + error.message;
+    return next(error);
   }
 });
 
