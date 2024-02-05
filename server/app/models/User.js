@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   firstName: {
-    type: String, 
-    required: true, 
+    type: String,
+    required: true,
   },
   lastName: {
     type: String,
@@ -17,10 +17,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true, 
+    required: function () {
+      return !this.isGoogleAccount;
+    }, // Required if not a Google account,
   },
   sex: {
-    type: String, 
+    type: String,
     required: true,
   },
   height: {
@@ -29,9 +31,17 @@ const userSchema = new mongoose.Schema({
   },
   isMetric: {
     type: Boolean,
-    required: true
-  }
-})
+    required: true,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+  },
+  isGoogleAccount: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 
 // Hash password before saving
