@@ -3,6 +3,7 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 const mongoose = require("mongoose");
+const User = require("./app/models/User");
 require("dotenv").config();
 
 // Load environment variables
@@ -40,10 +41,13 @@ passport.serializeUser(function (user, done) {
   done(null, user.id); // or whatever unique identifier you have for your user
 });
 
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
+passport.deserializeUser(async function (id, done) {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
 app.use("/user", userRoutes); // This prefixes all user routes with '/user'

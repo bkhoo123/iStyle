@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
   },
   isGoogleAccount: {
     type: Boolean,
-    default: false,
+    deffault: false,
   },
 });
 
