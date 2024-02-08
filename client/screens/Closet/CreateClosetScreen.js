@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { useState } from 'react'
 import CustomInput from '../../components/CustomInput'
+import ActionBar from '../../components/ActionBar';
 
 export default function CreateClosetScreen() {
     const [ closetName, setClosetName ] = useState("");
@@ -21,6 +22,7 @@ export default function CreateClosetScreen() {
 
   return (
     <View style={styles.rootContainer}>
+      <ActionBar />
       <CustomInput
         labelName="Closet Name"
         labelText={closetName}
