@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		paddingHorizontal: 18,
 		width: "100%",
-		paddingBottom: 12,
 	},
     buttonOuterContainer: {
         borderRadius: 28,

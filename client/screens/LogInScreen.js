@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TextInput, Pressable } from "react-native";
 import React, { useState } from "react";
 import Palette from "../constants/Palette";
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import SocialButton from "../components/SocialButton";
 import PrimaryButton from "../components/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { loadUser, loginUser } from "../store/session";
 import { validateEmail } from "../util/emailValidation";
 import Input from "../components/Input";
+import GoogleLogin from "../components/GoogleLogin";
 
 export default function LogInScreen() {
     const [ email, setEmail ] = useState("");
@@ -88,11 +89,7 @@ export default function LogInScreen() {
                     <View style={styles.divider} />
                 </View>
 
-                <SocialButton
-                    buttonText="Sign in with Google"
-                >
-                    <FontAwesome name="google" size={24} color="black" />
-                </SocialButton>
+                <GoogleLogin />
 
                 <SocialButton
                     buttonText="Sign in with Facebook"
