@@ -18,6 +18,7 @@ const userRoutes = require("./app/routes/userRoutes");
 const closetRoutes = require("./app/routes/closetRoutes");
 const itemRoutes = require("./app/routes/itemRoutes");
 const googleAuthRoutes = require("./app/routes/googleAuthRoutes");
+const outfitRoutes = require("./app/routes/outfitRoutes");
 
 
 app.use(cors()); // Cors middleware so that we don't have cor's errors
@@ -52,10 +53,12 @@ passport.deserializeUser(async function (id, done) {
   }
 });
 
+// Define and import routes
 app.use("/user", userRoutes); // This prefixes all user routes with '/user'
 app.use("/closet", closetRoutes); // This prefixes all closet routes with "/closet"
 app.use('/item', itemRoutes) // This prefixes all item routes with "/item"
 app.use("/auth/google", googleAuthRoutes); // This prefixes all closet routes with "/closet"
+app.use("/api/outfits", outfitRoutes); // This prefixes all outfit routes with "/api/outfits"
 
 // Default test route to check if the server is running
 app.get("/", (req, res) => {
