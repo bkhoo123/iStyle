@@ -40,7 +40,7 @@ passport.use(
 router.post("/signup", async (req, res, next) => {
   try {
     // Check if the user already exists
-    const userExists = await User.findOne({ email: req.body.email });
+    const userExists = await User.findOne({email: req.body.email})
     if (userExists) {
       const error = new Error("Email already in use");
       error.status = 400;
@@ -49,8 +49,8 @@ router.post("/signup", async (req, res, next) => {
     console.log(userExists, "userExists");
 
     // Create a new user
-    const { firstName, lastName, email, password, sex, height, isMetric } =
-      req.body;
+    const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
+
 
     const user = new User({
       firstName,
@@ -79,122 +79,70 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-// POST /user/login
-// Route to log in a user
-router.post("/login", async (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      const error = new Error(info.message);
-      error.status = 400;
-      return next(error);
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      return res.send("Logged in successfully");
-    });
-  })(req, res, next);
-});
-
-// GET /user/:userId
-// Route to get user by ID
-router.get("/:userId", authenticateUser, async (req, res, next) => {
+// Login Route
+router.post('/login', async (req, res) => {
   try {
-    const { userId } = req.params;
-    console.log("checking user id", userId);
-
-    if (!userId) {
-      const error = new Error("User ID is required");
-      error.status = 400;
-      throw error;
-    }
-
-    // Use findById for a more direct approach
-    const user = await User.findById(userId);
+    // Find the user by email
+    const user = await User.findOne({ email: req.body.email})
     if (!user) {
-      const error = new Error("User not found");
-      error.status = 404;
-      throw error;
+      return res.status(400).send('Invalid email or password')
     }
 
-    res.send(user);
+    // Check if password is correct
+    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    if (!isMatch) {
+      return res.status(400).send("Invalid email or password")
+    }
+
+    res.send("Logged in successfully")
   } catch (error) {
-    return next(error);
+    res.status(500).send('Error during login: ' + error.message)
   }
-});
+})
 
-// DELETE /user
-// Route to Delete a User by email
-router.delete("/", authenticateUser, async (req, res, next) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      const error = new Error("Email required for deletion.");
-      error.status = 404;
-      throw error;
-    }
-
-    console.log("Checking email", email);
-
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      const error = new Error("User not found");
-      error.status = 404;
-      throw error;
-    }
-
-    console.log("Checking user", user);
-
-    // Check if the logged-in user is the same as the user to be deleted
-    if (!req.user || user._id.toString() !== req.user._id.toString()) {
-      const error = new Error("Unauthorized to delete this user");
-      error.status = 401;
-      throw error;
-    }
-
-    // Perform the deletion
-    await User.findByIdAndDelete(user._id);
-
-    // If all goes well confirm the deletion to the client
-    res.status(200).send("User deleted successfully");
-  } catch (error) {
-    next(error);
-  }
-});
-
-// POST /user/:userId/closets
-// Route to create a new closet for a user
-// Route to create a new closet for a user
-router.post("/closets", async (req, res) => {
+// Route to find a user by userId
+router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+    if (!userId) {
+      return res.status(400).send("User Id is required")
     }
 
-    const { name, type, notes} = req.body;
+    const user = await User.findOne({userId: userId})
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
 
-    const newCloset = new Closet({
-      name: name,
-      type: type,
-      notes: notes,
-      user: userId
-    })
+    res.send(user)
+  } catch (error) {
+    res.status(500).send("Error retrieving user by userId " + error.message)
+  }
+})
 
-    const savedCloset = await newCloset.save();
+// Route to Delete a User
+router.delete("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params
 
-    res.status(201).json(savedCloset)
+    if (!userId) {
+      return res.status(404).send("User not found or already deleted.")
+    }
+
+    // If all goes well confirm the deletion to the client
+    res.status(200).send("User deleted successfully")
 
   } catch (error) {
-    res.status(500).send(error.message)
+    res.status(500).send("Error during deletion: " + error.mesesage)
+  }
+})
+
+// Route to create a new closet for a user
+router.post("/:userId/closets", async (req, res) => {
+  try {
+
+  } catch (error) {
+    res.status(500).send("")
   }
 })
 
