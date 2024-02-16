@@ -99,6 +99,18 @@ export const fetchRestoreUser = async () => {
     }
 }
 
+/***
+// restore user
+export const fetchRestoreUser = async () => {
+    try {
+        const response = await fetch(`${url}/user/`);
+
+        return response;
+    } catch(error) {
+        console.error('Error restoring user data:', error);
+    }
+}
+
 // sign up user
 export const fetchSignUp = async (user) => {
     try {
