@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import Palette from '../constants/Palette';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ActionBar(onSave) {
 	const navigation = useNavigation();
@@ -16,7 +17,7 @@ export default function ActionBar(onSave) {
                 onPress={() => navigation.goBack()}
                 android_ripple={{ color: Palette.primary }}
             >
-                <Text style={styles.buttonText}>Cancel</Text>
+                <Ionicons name="arrow-back" size={18} color="black" />
             </Pressable>
         </View>
         <View style={styles.buttonOuterContainer}>
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     actionButtonsContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		paddingHorizontal: 18,
 		width: "100%",
 	},
     buttonOuterContainer: {

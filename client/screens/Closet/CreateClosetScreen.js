@@ -20,6 +20,19 @@ export default function CreateClosetScreen() {
         setClosetNotes(input);
     };
 
+    const handleClosetSave = () => {
+      const newCloset = {
+        closetName,
+        closetType,
+        closetNotes
+      }
+
+      if (newCloset.closetName.length < 1) {
+        Alert.alert('Error', 'Please enter a closet name.');
+        return;
+      }
+    }
+
   return (
     <View style={styles.rootContainer}>
       <ActionBar />
