@@ -4,6 +4,104 @@ const User = require("../models/User")
 const Closet = require("../models/Closet")
 
 
+// Route to get all closets by userId
+router.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params
+    
+    const user = await User.findById(userId)
+
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+
+    const allClosets = await Closet.find({ userId: userId})
+
+    return res.status(200).json(allClosets)
+
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
+
+// Route to update a closet by closetId
+router.put("/:closetId", async (req, res) => {
+  try {
+    const { closetId } = req.params;
+    const { name, type, notes } = req.body;
+
+    // Update the closet
+    const updatedCloset = await Closet.findByIdAndUpdate(
+      closetId,
+      { name, type, notes },
+      { new: true }  // This option returns the modified document rather than the original
+    );
+
+    // If no closet was found with the given ID
+    if (!updatedCloset) {
+      return res.status(404).send("Closet not found");
+    }
+
+    // Send the updated closet as a response
+    res.status(200).json(updatedCloset);
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
+// Route to create a new closet for a user
+router.post("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+    }
+
+    const { name, type, notes} = req.body;
+
+    // creates a new instance of a closet object
+    const newCloset = new Closet({
+      name: name,
+      type: type,
+      notes: notes,
+      userId: userId
+    })
+
+    // saves the closet to the database
+    const savedCloset = await newCloset.save();
+
+    // res.status(201).json(savedCloset)
+
+    res.status(201).send(`Successfully created a closet for user ${userId}`)
+
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
+
+// Route to delete a closet by closetId
+router.delete("/:closetId", async (req, res) => {
+  try {
+    const { closetId } = req.params
+
+    // Find the closet and delete it 
+    const deletedCloset = await Closet.findByIdAndDelete(closetId)
+
+    // If no closet was found with the given ID
+    if (!deletedCloset) {
+      return res.status(404).send("Closet not found")
+    }
+
+    res.status(200).send(`Closet with ID ${closetId} successfully deleted`)
+
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
 
 
 

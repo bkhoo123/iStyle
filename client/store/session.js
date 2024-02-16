@@ -13,6 +13,17 @@ export const restoreUser = createAsyncThunk(`user/restoreUser`, async () => {
     const data = await response.json();
     return data;
 })
+<<<<<<< HEAD
+=======
+
+export const signUpUser = createAsyncThunk(`user/signUpUser`, async (user) => {
+    console.log("USER", user)
+    const response = await fetchSignUp(user);
+    const data = await response.json();
+    console.log("data__", data);
+    return data;
+})
+>>>>>>> main
 
 const sessionSlice = createSlice({
     name: "user",
@@ -23,7 +34,11 @@ const sessionSlice = createSlice({
     reducers: {
         removeUser: (state) => {
             state.user = null;
+<<<<<<< HEAD
         }
+=======
+        },
+>>>>>>> main
     },
     extraReducers: (builder) => {
         builder
@@ -43,6 +58,17 @@ const sessionSlice = createSlice({
                 state.user = null;
                 state.isLoggedIn = false;
             })
+<<<<<<< HEAD
+=======
+            .addCase(signUpUser.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.isLoggedIn = true;
+            })
+            .addCase(signUpUser.rejected, (state) => {
+                state.user = null;
+                state.isLoggedIn = false;
+            })
+>>>>>>> main
     }
 });
 
@@ -73,6 +99,7 @@ export const fetchLogin = async (email, password) => {
 
 // restore user
 export const fetchRestoreUser = async () => {
+<<<<<<< HEAD
     try {
         const response = await fetch(`${url}/user/`);
 
@@ -89,12 +116,35 @@ export const restoreUser = () => async (dispatch) => {
         // to-do: update backend route
         const response = await fetch(`${url}/user/login`);
         const data = await response.json();
+=======
+    try {
+        const response = await fetch(`${url}/user/`);
+>>>>>>> main
 
-        dispatch(loadUser(data.user));
+        return response;
     } catch(error) {
         console.error('Error restoring user data:', error);
     }
 }
+
+// sign up user
+export const fetchSignUp = async (user) => {
+    try {
+        console.log("USER:::", user)
+        const response = await fetch(`${url}/user/signup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        });
+        return response;
+    } catch (error) {
+        console.error('Error signing up:', error);
+    }
+}
+
+/***
 
 // sign up user
 export const signup = (user) => async (dispatch) => {
