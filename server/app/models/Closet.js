@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const closetSchema = new mongoose.Schema({
-  user_id: {
+  userId: {
     type: Schema.Types.ObjectId, 
     ref: "User"
   },

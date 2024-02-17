@@ -1,92 +1,177 @@
 const express = require("express");
 const router = express.Router();
-const User = require('../models/User');
-const Closet = require('../models/Closet')
-const bcrypt = require('bcryptjs');
+const User = require("../models/User");
+const Closet = require("../models/Closet");
+const bcrypt = require("bcryptjs");
+const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport");
+const { authenticateUser } = require("../../utility/auth-helpers.js");
 
-router.post('/signup', async (req, res) => {
+console.log("Checxking User", User);
+
+// Passport Local Strategy for email/password login
+passport.use(
+  new LocalStrategy(
+    { usernameField: "email" },
+    async (email, password, done) => {
+      // Match User
+      const user = await User.findOne({ email });
+      if (!user) {
+        return done(null, false, { message: "Email is not registered" });
+      }
+
+      // Match Password
+      try {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+          return done(null, user);
+        } else {
+          return done(null, false, { message: "Password incorrect" });
+        }
+      } catch (e) {
+        return done(e);
+      }
+    }
+  )
+);
+
+// POST /user/signup
+// Route to create a new user
+router.post("/signup", async (req, res, next) => {
   try {
     // Check if the user already exists
-    const userExists = await User.findOne({email: req.body.email})
+    const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
-      return res.status(400).send("Email already in use")
+      const error = new Error("Email already in use");
+      error.status = 400;
+      throw error;
     }
-    console.log(userExists, 'userExists')
+    console.log(userExists, "userExists");
 
     // Create a new user
-    const {firstName, lastName, email, password, sex, height, isMetric} = req.body;
+    const { firstName, lastName, email, password, sex, height, isMetric } =
+      req.body;
 
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password,
+      sex,
+      height,
+      isMetric,
+    });
 
-		console.log(user, "user");
+    console.log(user, "user");
 
-		// Save the user in the database
-		await user.save();
-		// res.status(201).send("User created Successfully");
-    return res.status(201).json(user.toSafeObject());
-	} catch (error) {
-		res.status(500).send("Error during registration: " + error.message);
-	}
+    // Save the user in the database
+    await user.save();
+
+    // Log the user in with passport
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send("User created and logged in successfully");
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post('/login', async (req, res) => {
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email: req.body.email})
+// POST /user/login
+// Route to log in a user
+router.post("/login", async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
     if (!user) {
-      return res.status(400).send('Invalid email or password')
+      const error = new Error(info.message);
+      error.status = 400;
+      return next(error);
     }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.send("Logged in successfully");
+    });
+  })(req, res, next);
+});
 
-    // Check if password is correct
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(400).send("Invalid email or password")
-    }
-
-    res.send("Logged in successfully")
-  } catch (error) {
-    res.status(500).send('Error during login: ' + error.message)
-  }
-})
-
-// Route to find a user by userId
-router.get("/:userId", async (req, res) => {
+// GET /user/:userId
+// Route to get user by ID
+router.get("/:userId", authenticateUser, async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const { userId } = req.params;
+    console.log("checking user id", userId);
 
     if (!userId) {
-      return res.status(400).send("User Id is required")
+      const error = new Error("User ID is required");
+      error.status = 400;
+      throw error;
     }
 
-    const user = await User.findOne({userId: userId})
+    // Use findById for a more direct approach
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found")
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
     }
 
-    res.send(user)
+    res.send(user);
   } catch (error) {
-    res.status(500).send("Error retrieving user by userId " + error.message)
+    return next(error);
   }
-})
+});
 
-// Route to Delete a User
-router.delete("/:userId", async (req, res) => {
+// DELETE /user
+// Route to Delete a User by email
+router.delete("/", authenticateUser, async (req, res, next) => {
   try {
-    const { userId } = req.params
+    const { email } = req.body;
 
-    if (!userId) {
-      return res.status(404).send("User not found or already deleted.")
+    if (!email) {
+      const error = new Error("Email required for deletion.");
+      error.status = 404;
+      throw error;
     }
+
+    console.log("Checking email", email);
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
+    }
+
+    console.log("Checking user", user);
+
+    // Check if the logged-in user is the same as the user to be deleted
+    if (!req.user || user._id.toString() !== req.user._id.toString()) {
+      const error = new Error("Unauthorized to delete this user");
+      error.status = 401;
+      throw error;
+    }
+
+    // Perform the deletion
+    await User.findByIdAndDelete(user._id);
 
     // If all goes well confirm the deletion to the client
-    res.status(200).send("User deleted successfully")
-
+    res.status(200).send("User deleted successfully");
   } catch (error) {
-    res.status(500).send("Error during deletion: " + error.mesesage)
+    next(error);
   }
-})
+});
 
+// POST /user/:userId/closets
 // Route to create a new closet for a user
-router.post("/:userId/closets", async (req, res) => {
+// Route to create a new closet for a user
+router.post("/closets", async (req, res) => {
   try {
 
   } catch (error) {
