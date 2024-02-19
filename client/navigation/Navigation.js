@@ -17,6 +17,7 @@ import Logo from "../components/Logo";
 import { useDispatch, useSelector } from "react-redux";
 import { restoreUser } from "../store/session";
 import CreateClosetScreen from "../screens/Closet/CreateClosetScreen";
+import PasswordRetrieval from "../screens/PasswordRetrieval";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -25,9 +26,6 @@ const BottomTabs = createBottomTabNavigator();
 function AuthStack() {
 	return (
         <SafeAreaView style={styles.screen}>
-            <View style={styles.logoContainer}>
-            <Logo />
-            </View>
             <Stack.Navigator style={styles.container}>
                 <Stack.Screen
                     name="TopTabNavigator"
@@ -44,6 +42,11 @@ function AuthStack() {
                     component={SignUpScreen}
                     options={{ headerShown: false }}
                 />
+				<Stack.Screen
+                    name="PasswordRetrieval"
+                    component={PasswordRetrieval}
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         </SafeAreaView>
 	);
@@ -52,7 +55,7 @@ function AuthStack() {
 function AuthenticatedStack() {
 	return (
         <SafeAreaView style={styles.screen}>
-			<Header />
+			{/* <Header /> */}
 			<Stack.Navigator>
 				<Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
 				{/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
@@ -168,10 +171,5 @@ const styles = StyleSheet.create({
 		fontSize: 28,
 		fontWeight: 800,
 	},
-	logoContainer: {
-		justifyContent: "center",
-		alignItems: "center",
-		paddingBottom: 12,
-		borderBottomWidth: 1,
-	},
+
 });

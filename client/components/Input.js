@@ -52,7 +52,7 @@ export default function Input({ labelText, placeholderText, inputValue, handleTe
         />
         {
             labelText.includes("Password") && isLogin ? (
-                <SecondaryButton buttonText="Forgot Password?" buttonLink="RetrievePassword" />
+                <SecondaryButton buttonText="Forgot Password?" buttonLink="PasswordRetrieval" />
             ) : ""
         }
         {

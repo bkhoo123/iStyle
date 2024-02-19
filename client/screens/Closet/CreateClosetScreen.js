@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { useState } from 'react'
 import CustomInput from '../../components/CustomInput'
+import ActionBar from '../../components/ActionBar';
 
 export default function CreateClosetScreen() {
     const [ closetName, setClosetName ] = useState("");
@@ -19,8 +20,22 @@ export default function CreateClosetScreen() {
         setClosetNotes(input);
     };
 
+    const handleClosetSave = () => {
+      const newCloset = {
+        closetName,
+        closetType,
+        closetNotes
+      }
+
+      if (newCloset.closetName.length < 1) {
+        Alert.alert('Error', 'Please enter a closet name.');
+        return;
+      }
+    }
+
   return (
     <View style={styles.rootContainer}>
+      <ActionBar />
       <CustomInput
         labelName="Closet Name"
         labelText={closetName}
