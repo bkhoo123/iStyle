@@ -77,8 +77,6 @@ export default function SignUpScreen() {
 			password,
 		};
 
-		console.log("newUser:", newUser);
-
 		setErrors({});
 		const submitErrors = {};
 

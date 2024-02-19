@@ -17,6 +17,7 @@ import Logo from "../components/Logo";
 import { useDispatch, useSelector } from "react-redux";
 import { restoreUser } from "../store/session";
 import CreateClosetScreen from "../screens/Closet/CreateClosetScreen";
+import PasswordRetrieval from "../screens/PasswordRetrieval";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -39,6 +40,11 @@ function AuthStack() {
                 <Stack.Screen
                     name="SignUp"
                     component={SignUpScreen}
+                    options={{ headerShown: false }}
+                />
+				<Stack.Screen
+                    name="PasswordRetrieval"
+                    component={PasswordRetrieval}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
