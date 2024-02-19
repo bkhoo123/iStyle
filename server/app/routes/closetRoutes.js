@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const User = require("../models/User")
 const Closet = require("../models/Closet")
-
+const { authenticateUser } = require("../../utility/auth-helpers.js");
 
 // Route to get all closets by userId
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", authenticateUser, async (req, res) => {
   try {
     const { userId } = req.params
     
@@ -25,7 +25,7 @@ router.get("/:userId", async (req, res) => {
 })
 
 // Route to update a closet by closetId
-router.put("/:closetId", async (req, res) => {
+router.put("/:closetId", authenticateUser, async (req, res) => {
   try {
     const { closetId } = req.params;
     const { name, type, notes } = req.body;
@@ -52,7 +52,7 @@ router.put("/:closetId", async (req, res) => {
 
 
 // Route to create a new closet for a user
-router.post("/:userId", async (req, res) => {
+router.post("/:userId", authenticateUser, async (req, res) => {
   try {
     const { userId } = req.params
 
@@ -84,7 +84,7 @@ router.post("/:userId", async (req, res) => {
 })
 
 // Route to delete a closet by closetId
-router.delete("/:closetId", async (req, res) => {
+router.delete("/:closetId", authenticateUser, async (req, res) => {
   try {
     const { closetId } = req.params
 
