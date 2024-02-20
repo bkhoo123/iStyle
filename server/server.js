@@ -19,6 +19,7 @@ const closetRoutes = require("./app/routes/closetRoutes");
 const itemRoutes = require("./app/routes/itemRoutes");
 const googleAuthRoutes = require("./app/routes/googleAuthRoutes");
 const outfitRoutes = require("./app/routes/outfitRoutes");
+const imageRoutes = require("./app/routes/imageRoutes");
 
 
 app.use(cors()); // Cors middleware so that we don't have cor's errors
@@ -59,6 +60,7 @@ app.use("/closet", closetRoutes); // This prefixes all closet routes with "/clos
 app.use('/item', itemRoutes) // This prefixes all item routes with "/item"
 app.use("/auth/google", googleAuthRoutes); // This prefixes all closet routes with "/closet"
 app.use("/api/outfits", outfitRoutes); // This prefixes all outfit routes with "/api/outfits"
+app.use("/api/image", imageRoutes); // This prefixes all image routes with "/api/image"
 
 // Default test route to check if the server is running
 app.get("/", (req, res) => {
