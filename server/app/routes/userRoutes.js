@@ -82,6 +82,7 @@ router.post("/signup", async (req, res, next) => {
 // POST /user/login
 // Route to log in a user
 router.post("/login", async (req, res, next) => {
+  console.log("We in here yo");
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
@@ -173,29 +174,32 @@ router.delete("/", authenticateUser, async (req, res, next) => {
 // Route to create a new closet for a user
 router.post("/closets", async (req, res) => {
   try {
-    const { userId } = req.params
+    const { userId } = req.params;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).send("User not found and therefore can't create a closet for him or her")
+      return res
+        .status(404)
+        .send(
+          "User not found and therefore can't create a closet for him or her"
+        );
     }
 
-    const { name, type, notes} = req.body;
+    const { name, type, notes } = req.body;
 
     const newCloset = new Closet({
       name: name,
       type: type,
       notes: notes,
-      user: userId
-    })
+      user: userId,
+    });
 
     const savedCloset = await newCloset.save();
 
-    res.status(201).json(savedCloset)
-
+    res.status(201).json(savedCloset);
   } catch (error) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
-})
+});
 
 module.exports = router;

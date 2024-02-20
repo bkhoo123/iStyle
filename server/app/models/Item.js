@@ -56,11 +56,11 @@ const itemSchema = new mongoose.Schema({
 });
 
 // Virtual variable to get outfits associated with this item
-itemSchema.virtual("outfits", {
-  ref: "Outfit",
-  localField: "_id",
-  foreignField: "item_id",
-});
+// itemSchema.virtual("outfits", {
+//   ref: "Outfit",
+//   localField: "_id",
+//   foreignField: "item_id",
+// });
 
 // Ensure to include the virtuals in toJSON and toObject if you want to output them
 itemSchema.set("toJSON", { virtuals: true });

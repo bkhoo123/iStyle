@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Outfit = require("../models/Outfit");
+const Outfit = require("../models/Outfits.js");
 const { authenticateUser } = require("../../utility/auth-helpers.js");
 
 /*

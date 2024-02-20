@@ -44,17 +44,17 @@ const outfitSchema = new Schema({
 });
 
 // Virtual field to get items associated with this outfit
-outfitSchema.virtual("calendar", {
-  ref: "Calendar",
-  localField: "_id",
-  foreignField: "outfit_id",
-});
+// outfitSchema.virtual("calendar", {
+//   ref: "Calendar",
+//   localField: "_id",
+//   foreignField: "outfit_id",
+// });
 
-outfitSchema.virtual("items", {
-  ref: "Item",
-  localField: "_id",
-  foreignField: "outfit_id",
-});
+// outfitSchema.virtual("items", {
+//   ref: "Item",
+//   localField: "_id",
+//   foreignField: "outfit_id",
+// });
 
 // Index by user ID
 outfitSchema.index({ userId: 1 });

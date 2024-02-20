@@ -30,11 +30,11 @@ const calendarSchema = new Schema({
 });
 
 // Virtual field to get outfits associated with this calendar
-calendarSchema.virtual("outfits", {
-  ref: "Outfit",
-  localField: "_id",
-  foreignField: "calendar_id",
-});
+// calendarSchema.virtual("outfits", {
+//   ref: "Outfit",
+//   localField: "_id",
+//   foreignField: "calendar_id",
+// });
 
 // Index by user ID
 calendarSchema.index({ userId: 1 });
