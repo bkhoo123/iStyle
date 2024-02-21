@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const { authenticateUser } = require("../../utility/auth-helpers.js");
+const { validateUser, handleValidationErrors } = require('../../utility/express-validator.js');
 
 console.log("Checking User", User);
 
@@ -34,7 +35,7 @@ passport.use(
 
 // POST /user/signup
 // Route to create a new user
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", validateUser, handleValidationErrors, async (req, res, next) => {
 	try {
 		// Check if the user already exists
 		const userExists = await User.findOne({ email: req.body.email });
@@ -166,12 +167,11 @@ router.delete("/", authenticateUser, async (req, res, next) => {
 
 // POST /user/:userId/closets
 // Route to create a new closet for a user
-// Route to create a new closet for a user
-router.post("/closets", async (req, res) => {
-	try {
-	} catch (error) {
-		res.status(500).send("");
-	}
-});
+// router.post("/closets", async (req, res) => {
+// 	try {
+// 	} catch (error) {
+// 		res.status(500).send("");
+// 	}
+// });
 
 module.exports = router;

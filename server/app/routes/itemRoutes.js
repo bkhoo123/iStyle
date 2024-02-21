@@ -4,27 +4,40 @@ const Closet = require("../models/Closet")
 const Item = require("../models/Item")
 const { authenticateUser } = require("../../utility/auth-helpers.js");
 
-// Route to get all items in a closet
-router.get('/closet/:closetId', authenticateUser, async (req, res) => {
+// Route to get all items in a closet by user ID
+router.get('user/:userId/closet/:closetId', authenticateUser, async (req, res) => {
   try {
-    const { closetId } = req.params;
-    const closet = await Closet.findById(closetId).populate('items');
+    const { userId, closetId } = req.params;
+
+    const closet = await Closet.findOne({ _id: closetId, owner: userId }).populate('items');
+
     if (!closet) {
-      return res.status(404).send('Closet not found');
+      return res.status(404).send('Closet not found or does not belong to the user');
     }
+
+    if(req.user.id !== userId) {
+      return res.status(403).send('Forbidden: You do not have access to this closet');
+    }
+
     res.status(200).json(closet.items);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-// Route to create a new item in a closet
-router.post('/closet/:closetId', authenticateUser, async (req, res) => {
+// Route to create a new item in a closet by userId
+router.post('user/:userId/closet/:closetId', authenticateUser, async (req, res) => {
   try {
-    const { closetId } = req.params;
-    const closet = await Closet.findById(closetId);
+    const { userId, closetId } = req.params;
+
+    const closet = await Closet.findOne({ _id: closetId, owner: userId });
+
     if (!closet) {
-      return res.status(404).send('Closet not found');
+      return res.status(404).send('Closet not found or does not belong to the user');
+    }
+
+    if (req.user.id !== userId) {
+      return res.status(403).send('Forbidden: You do not have permission to add items to this closet')
     }
 
     const newItem = new Item({
@@ -33,6 +46,7 @@ router.post('/closet/:closetId', authenticateUser, async (req, res) => {
     });
 
     const savedItem = await newItem.save();
+
     closet.items.push(savedItem._id);
     await closet.save();
 
@@ -43,7 +57,7 @@ router.post('/closet/:closetId', authenticateUser, async (req, res) => {
 });
 
 // Route to update an item by itemId
-router.put('/item/:itemId', authenticateUser, async (req, res) => {
+router.put('/:itemId', authenticateUser, async (req, res) => {
   try {
     const { itemId } = req.params;
     const updatedItem = await Item.findByIdAndUpdate(itemId, req.body, { new: true });
@@ -57,7 +71,7 @@ router.put('/item/:itemId', authenticateUser, async (req, res) => {
 });
 
 // Route to delete an item by itemId
-router.delete('/item/:itemId', authenticateUser, async (req, res) => {
+router.delete('/:itemId', authenticateUser, async (req, res) => {
   try {
     const { itemId } = req.params;
     const deletedItem = await Item.findByIdAndDelete(itemId);

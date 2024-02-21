@@ -62,6 +62,8 @@ app.get("/", (req, res) => {
   res.send({ message: "Welcome to iStyle API - Default Route" });
 });
 
+
+
 // Catch 404 Not Found errors - when no route matches
 app.use((req, res, next) => {
   const err = new Error("Not Found");
