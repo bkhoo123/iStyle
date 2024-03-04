@@ -8,7 +8,7 @@ const { authenticateUser } = require("../../utility/auth-helpers.js");
 router.get("/:userId", authenticateUser, async (req, res) => {
   try {
     const { userId } = req.params
-    
+
     const user = await User.findById(userId)
 
     if (!user) {
@@ -54,7 +54,9 @@ router.put("/:closetId", authenticateUser, async (req, res) => {
 // Route to create a new closet for a user
 router.post("/:userId", authenticateUser, async (req, res) => {
   try {
+    console.log("trying to create new closet");
     const { userId } = req.params
+    console.log("userID", userId)
 
     const user = await User.findById(userId);
     if (!user) {
@@ -88,7 +90,7 @@ router.delete("/:closetId", authenticateUser, async (req, res) => {
   try {
     const { closetId } = req.params
 
-    // Find the closet and delete it 
+    // Find the closet and delete it
     const deletedCloset = await Closet.findByIdAndDelete(closetId)
 
     // If no closet was found with the given ID
