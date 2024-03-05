@@ -11,7 +11,7 @@ import { useFonts, Montserrat_400Regular, Montserrat_600SemiBold } from "@expo-g
 import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import HomeScreen from "../screens/HomeScreen";
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Header from "../components/Header";
 import Logo from "../components/Logo";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,39 +25,27 @@ const BottomTabs = createBottomTabNavigator();
 
 function AuthStack() {
 	return (
-        <SafeAreaView style={styles.screen}>
-            <Stack.Navigator style={styles.container}>
-                <Stack.Screen
-                    name="TopTabNavigator"
-                    component={TopTabNavigator}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="SignIn"
-                    component={LogInScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="SignUp"
-                    component={SignUpScreen}
-                    options={{ headerShown: false }}
-                />
-				<Stack.Screen
-                    name="PasswordRetrieval"
-                    component={PasswordRetrieval}
-                    options={{ headerShown: false }}
-                />
-            </Stack.Navigator>
-        </SafeAreaView>
+		<SafeAreaView style={styles.screen}>
+			<Stack.Navigator style={styles.container}>
+				<Stack.Screen name="TopTabNavigator" component={TopTabNavigator} options={{ headerShown: false }} />
+				<Stack.Screen name="SignIn" component={LogInScreen} options={{ headerShown: false }} />
+				<Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+				<Stack.Screen name="PasswordRetrieval" component={PasswordRetrieval} options={{ headerShown: false }} />
+			</Stack.Navigator>
+		</SafeAreaView>
 	);
 }
 
 function AuthenticatedStack() {
 	return (
-        <SafeAreaView style={styles.screen}>
+		<SafeAreaView style={styles.screen}>
 			{/* <Header /> */}
 			<Stack.Navigator>
-				<Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
+				<Stack.Screen
+					name="BottomTabNavigator"
+					component={BottomTabNavigator}
+					options={{ headerShown: false }}
+				/>
 				{/* <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} /> */}
 				<Stack.Screen name="CreateCloset" component={CreateClosetScreen} options={{ headerShown: false }} />
 			</Stack.Navigator>
@@ -66,17 +54,17 @@ function AuthenticatedStack() {
 }
 
 function TopTabNavigator() {
-    return (
-        <TopTabs.Navigator
-            screenOptions={{
-                sceneContainerStyle: { backgroundColor: "#f0f0f0" },
-                tabBarIndicatorStyle: { backgroundColor: Palette.primary },
-            }}
-        >
-            <TopTabs.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
-            <TopTabs.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-        </TopTabs.Navigator>
-    )
+	return (
+		<TopTabs.Navigator
+			screenOptions={{
+				sceneContainerStyle: { backgroundColor: "#f0f0f0" },
+				tabBarIndicatorStyle: { backgroundColor: Palette.primary },
+			}}
+		>
+			<TopTabs.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
+			<TopTabs.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+		</TopTabs.Navigator>
+	);
 }
 
 function BottomTabNavigator() {
@@ -84,10 +72,12 @@ function BottomTabNavigator() {
 		<BottomTabs.Navigator
 			screenOptions={{
 				tabBarActiveTintColor: Palette.primary,
-				tabBarInactiveTintColor: 'grey',
-				tabBarStyle: [{
-					paddingTop: 8
-				}]
+				tabBarInactiveTintColor: "grey",
+				tabBarStyle: [
+					{
+						paddingTop: 8,
+					},
+				],
 			}}
 		>
 			<BottomTabs.Screen
@@ -95,7 +85,7 @@ function BottomTabNavigator() {
 				component={HomeScreen}
 				options={{
 					headerShown: false,
-					tabBarLabel: 'Home',
+					tabBarLabel: "Home",
 					tabBarIcon: ({ focused, color }) => (
 						<Ionicons name="ios-home" size={24} color={color} focused={focused} />
 					),
@@ -106,28 +96,29 @@ function BottomTabNavigator() {
 				component={CreateClosetScreen}
 				options={{
 					headerShown: false,
-					tabBarLabel: 'Create Closet',
-					tabBarIcon: ({ focused, color }) => (
-						<AntDesign name="pluscircle" size={24} color="black" />
-					),
+					tabBarLabel: "Create Closet",
+					tabBarIcon: ({ focused, color }) => <AntDesign name="pluscircle" size={24} color="black" />,
 				}}
 			/>
 		</BottomTabs.Navigator>
-	)
+	);
 }
 
 export default function Navigation() {
 	const dispatch = useDispatch();
 	// FOR TESTING:
-    // const user = false;
+	// const user = false;
 	const userIsLoggedIn = useSelector((state) => state.session.isLoggedIn);
-    const isLoaded = true;
+	const user = useSelector((state) => state.session.user);
+	console.log("userIsLoggedIn", userIsLoggedIn, user);
+	// const userIsLoggedIn = true;
+	const isLoaded = true;
 
 	useEffect(() => {
 		dispatch(restoreUser());
 	}, [userIsLoggedIn]);
 
-    const [fontsLoaded, fontError] = useFonts({
+	const [fontsLoaded, fontError] = useFonts({
 		Montserrat_400Regular,
 		Montserrat_600SemiBold,
 	});
@@ -142,22 +133,13 @@ export default function Navigation() {
 		return null;
 	}
 
-
-
-
 	return isLoaded ? (
-            <NavigationContainer style={styles.screen} onLayout={onLayoutRootView}>
-
-                {
-                    userIsLoggedIn ? (
-                        <AuthenticatedStack />
-                    ) : (
-                        <AuthStack />
-                    )
-                }
-            </NavigationContainer>
+		<NavigationContainer style={styles.screen} onLayout={onLayoutRootView}>
+			{userIsLoggedIn && user && user.user ? <AuthenticatedStack /> : <AuthStack />}
+		</NavigationContainer>
 	) : (
-		<LoadingOverlay />
+		""
+		// <LoadingOverlay />
 	);
 }
 
@@ -171,5 +153,4 @@ const styles = StyleSheet.create({
 		fontSize: 28,
 		fontWeight: 800,
 	},
-
 });

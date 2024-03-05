@@ -64,6 +64,7 @@ router.post("/:userId", authenticateUser, async (req, res) => {
     }
 
     const { name, type, notes} = req.body;
+    console.log("name, type, notes", req.body);
 
     // creates a new instance of a closet object
     const newCloset = new Closet({
@@ -75,10 +76,11 @@ router.post("/:userId", authenticateUser, async (req, res) => {
 
     // saves the closet to the database
     const savedCloset = await newCloset.save();
+    console.log("saved closet", savedCloset);
 
-    // res.status(201).json(savedCloset)
+    res.status(201).json(savedCloset)
 
-    res.status(201).send(`Successfully created a closet for user ${userId}`)
+    // res.status(201).send(`Successfully created a closet for user ${userId}`)
 
   } catch (error) {
     res.status(500).send(error.message)

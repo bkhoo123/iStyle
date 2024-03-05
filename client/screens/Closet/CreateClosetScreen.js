@@ -25,23 +25,23 @@ export default function CreateClosetScreen() {
 
 	const handleClosetSave = () => {
 		const newCloset = {
-			closetName,
-			closetType,
-			closetNotes,
+			name: closetName,
+			type: closetType,
+			notes: closetNotes,
 		};
 
-		if (newCloset.closetName.length < 1) {
+		if (newCloset.name.length < 1) {
 			Alert.alert("Error", "Please enter a closet name.");
 			return;
 		}
 
 		console.log("newCloset ==>", newCloset);
 
-    try {
-      dispatch(addCloset(newCloset));
-    } catch (error) {
-      Alert.alert("Failed to Create", "Could not create new closet");
-    }
+		try {
+			dispatch(addCloset(newCloset));
+		} catch (error) {
+			Alert.alert("Failed to Create", "Could not create new closet");
+		}
 	};
 
 	return (
