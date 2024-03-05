@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Palette from '../constants/Palette';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ActionBar(onSave) {
+export default function ActionBar({ onPress }) {
 	const navigation = useNavigation();
   return (
     <View style={styles.actionButtonsContainer}>
@@ -25,7 +25,7 @@ export default function ActionBar(onSave) {
                 style={({ pressed }) =>
                     pressed ? [styles.pressed, styles.buttonInnerContainer] : styles.buttonInnerContainer
                 }
-                onPress={onSave}
+                onPress={onPress}
                 android_ripple={{ color: Palette.primary }}
             >
                 <Text style={styles.buttonText}>Save</Text>

@@ -14,14 +14,16 @@ export const restoreUser = createAsyncThunk(`user/restoreUser`, async () => {
 });
 
 export const signUpUser = createAsyncThunk(`user/signUpUser`, async (user) => {
+	console.log("SIGN UPPPPPP");
 	const response = await fetchSignUp(user);
 	const data = await response.json();
+	console.log("data ===>", data);
 	return data;
 });
 
 export const logoutUser = createAsyncThunk(`user/logoutUser`, async () => {
-    const response = await fetchLogout();
-    return response;
+	const response = await fetchLogout();
+	return response;
 });
 
 const sessionSlice = createSlice({
@@ -38,6 +40,7 @@ const sessionSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(loginUser.fulfilled, (state, action) => {
+				console.log("user==>", action.payload);
 				state.user = action.payload;
 				state.isLoggedIn = true;
 			})
@@ -47,13 +50,18 @@ const sessionSlice = createSlice({
 			})
 			.addCase(restoreUser.fulfilled, (state, action) => {
 				state.user = action.payload;
-				state.isLoggedIn = true;
+				if (state.user) {
+					state.isLoggedIn = true;
+				} else {
+					state.isLoggedIn = false;
+				}
 			})
 			.addCase(restoreUser.rejected, (state) => {
 				state.user = null;
 				state.isLoggedIn = false;
 			})
 			.addCase(signUpUser.fulfilled, (state, action) => {
+				console.log("user==>", action.payload);
 				state.user = action.payload;
 				state.isLoggedIn = true;
 			})
@@ -61,10 +69,10 @@ const sessionSlice = createSlice({
 				state.user = null;
 				state.isLoggedIn = false;
 			})
-            .addCase(logoutUser.fulfilled, (state) => {
-                state.user = null;
-                state.isLoggedIn = false;
-            });
+			.addCase(logoutUser.fulfilled, (state) => {
+				state.user = null;
+				state.isLoggedIn = false;
+			});
 	},
 });
 
@@ -85,11 +93,30 @@ export const fetchLogin = async (email, password) => {
 		});
 
 		// if (response.ok) {
-			return response.json();
+		return response.json();
 		// }
-
 	} catch (error) {
 		console.error("Error logging in:", error);
+	}
+};
+
+// signup user
+export const fetchSignUp = async (user) => {
+	try {
+		console.log("user ===> signup", user);
+		const response = await fetch(`${url}/user/signup`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				user,
+			}),
+		});
+
+		console.log("response==>", response.json());
+
+		return response;
+	} catch (error) {
+		console.error("Error signing up:", error);
 	}
 };
 
@@ -106,17 +133,17 @@ export const fetchRestoreUser = async () => {
 
 // logout user
 export const fetchLogout = async () => {
-    try {
-        const response = await fetch(`${url}/user/logout`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+	try {
+		const response = await fetch(`${url}/user/logout`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
 				email,
 			}),
-        });
+		});
 
-        return response;
-    } catch (error) {
-        console.error("Error logging out:", error);
-    }
+		return response;
+	} catch (error) {
+		console.error("Error logging out:", error);
+	}
 };

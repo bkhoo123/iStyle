@@ -69,7 +69,13 @@ router.post("/signup", validateUser, handleValidationErrors, async (req, res, ne
 			if (err) {
 				return next(err);
 			}
-			res.status(201).send("User created and logged in successfully");
+			// res.status(201).send("User created and logged in successfully");
+			res.json({
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+				id: user._id
+			})
 		});
 	} catch (error) {
 		next(error);
@@ -83,6 +89,9 @@ router.post("/login", async (req, res, next) => {
 		if (err) {
 			return next(err);
 		}
+
+		console.log("user ===>", user);
+
 		if (!user) {
 			const error = new Error(info.message);
 			error.status = 400;
@@ -92,7 +101,8 @@ router.post("/login", async (req, res, next) => {
 			if (err) {
 				return next(err);
 			}
-      res.status(201).send("User created and logged in successfully");
+    //   res.status(201).send("User created and logged in successfully");
+		res.json({user: user.toSafeObject()})
 		});
 	})(req, res, next);
 });
@@ -173,5 +183,20 @@ router.delete("/", authenticateUser, async (req, res, next) => {
 // 		res.status(500).send("");
 // 	}
 // });
+
+// restore session user
+router.get("/", async (req, res) => {
+    const { user } = req;
+
+    if (user) {
+        return res.json({
+            user: user.toSafeObject()
+        })
+    } else {
+        return res.json({
+            user: null
+        })
+    }
+})
 
 module.exports = router;
