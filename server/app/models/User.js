@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   sex: {
     type: String,
-    required: true,
+    required: false,
   },
   height: {
     type: Number,
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
   },
   isMetric: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   googleId: {
     type: String,

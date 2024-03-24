@@ -55,12 +55,14 @@ passport.deserializeUser(async function (id, done) {
 app.use("/user", userRoutes); // This prefixes all user routes with '/user'
 app.use("/closet", closetRoutes); // This prefixes all closet routes with "/closet"
 app.use('/item', itemRoutes) // This prefixes all item routes with "/item"
-app.use("/auth/google", googleAuthRoutes); // This prefixes all closet routes with "/closet"
+app.use("/auth/google", googleAuthRoutes); 
 
 // Default test route to check if the server is running
 app.get("/", (req, res) => {
   res.send({ message: "Welcome to iStyle API - Default Route" });
 });
+
+
 
 // Catch 404 Not Found errors - when no route matches
 app.use((req, res, next) => {
