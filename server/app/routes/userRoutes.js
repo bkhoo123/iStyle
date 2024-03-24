@@ -175,7 +175,6 @@ router.delete("/", authenticateUser, async (req, res, next) => {
 	}
 });
 
-// POST /user/:userId/closets
 // Route to create a new closet for a user
 // router.post("/closets", async (req, res) => {
 // 	try {
